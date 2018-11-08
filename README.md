@@ -84,3 +84,4 @@ Options:
 If visualization is set to True, BacGWASim graphs the simulated genotype-phenotypes as color-coded phylogenetic tree and causal variants presence-absence as heat-map.
 
 1. Simulation of a population of size 40 with 50 segregating sites as causal variants. 
+![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/mytree40_50.png)
