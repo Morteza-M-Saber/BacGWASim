@@ -1,0 +1,10 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+ModuleDir= config['ModuleDir']
+
+
+rule all:
+     input:
+          expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]), 
+
+include: ModuleDir+'/Phylogeny/phylogenetic_simulator.snake',
+
