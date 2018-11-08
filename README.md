@@ -91,3 +91,11 @@ If visualization is set to True, BacGWASim graphs the simulated genotype-phenoty
 
 3. Simulation of a population of size 500 with 10 segregating sites as causal variants.
 ![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/mytree500_10.png)
+
+# Verification
+With implemented evolutionary models and parameters for simulation of phylogenetic tree, genome content and phenotype, BacGWASim seeks to accurately simulate the important characteristics of bacterial genomes and populations. The  main feature that distinguishes bacterial populations from eukaryotes is genome-wide linkage disequilibrium (LD).    
+
+Genome-wide Linkage disequilibrium is one of the main features of bacterial population due to their clonal expansion. However, the genome-wide LD can be disrupted by homologous recombination which occur in bacteria in various degrees depending on the species. LD plots show that BacGWASim correctly captures the genome-wide LD while no recombination is simulated with decreasing LD levels in proportion with rate of homologous recombination simulated
+
+![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/LDRange.jpg)
+
