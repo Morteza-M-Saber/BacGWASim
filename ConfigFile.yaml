@@ -1,0 +1,58 @@
+#User-specified Info
+user_input: /home/masih/BacterialSimulator/Pipeline/inputs/user_input.txt
+GFF_file: /home/masih/BacterialSimulator/Pipeline/inputs/GCF_000007045.1_ASM704v1_genomic.gff
+fasta_file: /home/masih/BacterialSimulator/Pipeline/inputs/GCF_000007045.1_ASM704v1_genomic.fna
+
+outputDIR: /project/6006375/masih/Final3000_test4
+fasta_output: Streptococcus_pneumonia_r6 #Species Name
+ShellCallFile: /home/masih/BacterialSimulator/Pipeline/ShellCallFile
+ModuleDir: /home/masih/BacterialSimulator/Pipeline/Modules
+
+#Sequence input parameters
+seq_types: Protein_coding_gene,Intergenic_region,RNA_gene,Repeat_region
+SequenceDIR: Sequences
+platform: illumina 
+#How many cateogries to be used for each Sequence types, this equal to maximum number of parallel simulation for each category
+Protein_coding_gene_CatSize: 15
+RNA_gene_CatSize: 1
+Intergenic_region_CatSize: 10
+Repeat_region_CatSize: 1
+
+#Horizontal gene transfer (HGT) size
+HGTRate: 10
+NodeLen: 5
+GeneDB: /home/masih/BacterialSimulator/Pipeline/inputs/uniprot-Bacteria.fasta
+
+#Phylogeny Parameters
+PhylogeneticTreeDIR: Phylogeny 
+
+#Simulation Parameters     
+simulations: simulations
+Params_input: /home/masih/BacterialSimulator/Pipeline/inputs/Params.txt
+snakemake: /home/masih/miniconda3/envs/Sim/bin/snakemake
+alfsim: /home/masih/BacterialSimulator/ALF_standalone/bin/alfsim
+dawg: /home/masih/BacterialSimulator/dawg-develop/my_build/bin/bin/dawg
+art_illumina: /home/masih/BacterialSimulator/art_src_MountRainier_Linux/bin/bin/art_illumina
+samtools: /home/masih/miniconda3/envs/Sim/bin/samtools
+bwa: /home/masih/miniconda3/envs/Sim/bin/bwa 
+picard: /home/masih/miniconda3/envs/Sim/bin/picard
+gatk: /home/masih/BacterialSimulator/gatk/gatk-4.0.3.0/gatk
+vcftools: /home/masih/BacterialSimulator/vcftools_0.1.13/bin/vcftools
+bcftools: /home/masih/BacterialSimulator/bcfTools/bcftools/bcftools
+plink: /home/masih/BacterialSimulator/plink1.9/plink
+gtca: /home/masih/BacterialSimulator/gcta_1.91.4beta/gcta64
+PythonDir: /home/masih/miniconda3/envs/Sim/bin/python
+bgzip: /cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/htslib/1.5/bin/bgzip
+tabix: /cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/htslib/1.5/bin/tabix
+java: /home/masih/miniconda3/envs/Sim/bin/java
+haploview: /home/masih/BacterialSimulator/HaploView/Haploview.jar
+
+
+#Phenotype simulation parameters
+effect_size_ODR: 2,3,5,7,8,10,15,20,50,100
+causal_variant_Num: 10,20,50,100
+GWASHeritability: 1
+GWASDiseasePrevalence: 0.5
+GWASPhenSimRep: 1
+GWASCase: 1500
+GWASControl: 1500
