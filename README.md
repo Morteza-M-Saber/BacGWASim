@@ -33,6 +33,7 @@ Between parenthesis the versions the script was tested against:
 **GATK** (3.8.0)
 
 **Plink** (1.9)
+
 **gcta** (1.26.0)
 
 If visualization parameter is set to True:
