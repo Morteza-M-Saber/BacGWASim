@@ -1,0 +1,2 @@
+#Scoary paper:
+plink --cluster -mc 5 -ppc 0.05 --mh --adjust 

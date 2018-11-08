@@ -1,0 +1,40 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+
+rule AssemblerGenome:
+    input:
+        phylogeny=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        PG= expand("{outputDIR}/{simulations}/{{simulation_index}}/ProteinCodingGene/{iteration}/ProtSim",outputDIR=config["outputDIR"],simulations=config["simulations"],iteration=range(int(config['Protein_coding_gene_CatSize']))),
+        IR= expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/{iteration}/dawg.fas",outputDIR=config["outputDIR"],simulations=config["simulations"],iteration=range(int(config['Intergenic_region_CatSize']))),        
+        RG=expand("{outputDIR}/{simulations}/{{simulation_index}}/RNAGene/{iteration}/dawg.fas",outputDIR=config["outputDIR"],simulations=config["simulations"],iteration=range(int(config['RNA_gene_CatSize']))),
+        RR=expand("{outputDIR}/{simulations}/{{simulation_index}}/RepeatRegions/{iteration}/dawg.fas",outputDIR=config["outputDIR"],simulations=config["simulations"],iteration=range(int(config['Repeat_region_CatSize']))),
+    output:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{name}.fsa",outputDIR=config["outputDIR"],simulations=config["simulations"],name=names)
+    params:
+        Assembler=config['ModuleDir']+'/Assembler/AssemblerGenome.py',
+        PythonDir=config['PythonDir'],
+        logNAME="Assembleing simulated genomes into individuals." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        InputPG=','.join(input.PG)
+        InputIR=','.join(input.IR)
+        InputRG=','.join(input.RG)
+        InputRR=','.join(input.RR)
+
+        outdir='/'.join(str(output[0]).split('/')[:-1])
+
+        callString='%s %s -F %s -P %s -I %s -N %s -R %s -O %s' %(params.PythonDir,params.Assembler,\
+                                                                 str(input.phylogeny),\
+                                                                 InputPG,InputIR,InputRG,\
+                                                                 InputRR,outdir)
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True) 
+        
+        
+        
+
+
+            
+            
+        
+        

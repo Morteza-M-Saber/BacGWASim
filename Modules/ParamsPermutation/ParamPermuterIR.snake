@@ -1,0 +1,133 @@
+#configfile: "/home/masih/Baterial_simulator/Pipeline/ConfigFile.yaml"
+
+def indexer(wildcards):
+    return(simulation_index_dict[int(wildcards.simulation_index)])
+
+rule Params_PermuterIR:
+    input: 
+        phylogeny=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        IntergenicRegion= expand("{outputDIR}/{SequenceDIR}/{fasta_output}_Intergenic_region/{{iteration}}.fa",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=config["fasta_output"]),
+    output:
+        IntergenicRegionParams=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/{{iteration}}/dawg.params",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        value= indexer,
+        destdir_IR=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/dawg_IR.fas",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        destdir_RG=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/dawg_RG.fas",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        destdir_RR=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/dawg_RR.fas",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        dawg=config['dawg'],
+    run:
+        iterations=params.value
+        sub_list_index=['_intergenic','_RNA_genes','_repeat_regions']
+        # Write dawg parameters for simulating RNA genes
+        from Bio import SeqIO
+        from subprocess import call
+        #Retrieving and concatenating the sequences to be simulated
+        FastaSeq=''
+        with open (str(input.IntergenicRegion),'r') as file:
+            for records in SeqIO.parse(file,'fasta'):
+                FastaSeq+=str(records.seq)
+        
+        txt=open(str(output.IntergenicRegionParams),'w')
+        with open(str(input.phylogeny),'r') as file:
+            line=file.readline()
+            phylogenetic_tree=line.strip()
+    
+        
+        content=str()
+        phylogeny_txt='[Tree]\nTree = "%s"\n'%phylogenetic_tree
+        content+=phylogeny_txt
+        #Defining the parameters for simulation of nucleotide substituition 
+        sub_txt='[Subst]\n'
+        for param_cat in Global_models_noncoding[Intergenic_regions_models[0]]:
+                if param_cat == 'name':
+                    sub_txt+='Model = '
+                    sub_txt+=iterations[Global_models_noncoding[Intergenic_regions_models[0]][param_cat][0]+sub_list_index[0]]
+                    sub_txt+='\n'
+                if param_cat == 'parameters':
+                    sub_param_txt='Params = '
+                    for sub_param_cat in Global_models_noncoding[Intergenic_regions_models[0]][param_cat]:
+                        sub_param_txt+=str(round(iterations[sub_param_cat+sub_list_index[0]],2))
+                        sub_param_txt+=','
+                    sub_param_txt=sub_param_txt[:-1]+'\n'
+                    sub_txt+=sub_param_txt
+                if param_cat == 'frequencies':
+                        sub_param_txt='Freqs = '
+                        frequencies=[items for items in iterations[Global_models_noncoding[Intergenic_regions_models[0]][param_cat][0]+sub_list_index[0]].split(';')]
+                        for freqs in frequencies:
+                             sub_param_txt+=freqs+','
+                        sub_param_txt=sub_param_txt[:-1]+'\n'
+                        sub_txt+=sub_param_txt 
+        content+=sub_txt
+        #Defining the parameters for simulation of varitaion of substituion rate and invariant site ratio
+        var_txt=str()
+        for param_cat in Global_models_noncoding[Intergenic_regions_models[2]]:
+                if param_cat == 'model':
+                    var_txt+='Rate.Model = '
+                    var_txt+=iterations[Global_models_noncoding[Intergenic_regions_models[2]][param_cat][0]+sub_list_index[0]]
+                    var_txt+="\n"
+                if param_cat == 'parameters':
+                    var_txt_sub='Rate.Params = '
+                    for var_param_cat in Global_models_noncoding[Intergenic_regions_models[2]][param_cat]:
+                        var_txt_sub+=str(round(iterations[var_param_cat+sub_list_index[0]],5))
+                        var_txt_sub+="," 
+                    var_txt_sub=var_txt_sub[:-1]+'\n'
+                    var_txt+=var_txt_sub
+        content+=var_txt
+        #Defining the parameters for simulation of insertion and deletion
+        indel_txt='[Indel]\n'
+        for param_cat in Global_models_noncoding[Intergenic_regions_models[1]]:
+                if param_cat == 'Gainrate':
+                    indel_txt+='Rate = '
+                    indel_txt+=str(round(iterations[Global_models_noncoding[Intergenic_regions_models[1]][param_cat][0]+sub_list_index[0]],5))
+                    indel_txt+="\n"
+                if param_cat == 'model':
+                    indel_txt+='Model = '
+                    indel_txt+=iterations[Global_models_noncoding[Intergenic_regions_models[1]][param_cat][0]+sub_list_index[0]]
+                    indel_txt+="\n"
+                if param_cat == 'parameters':
+                    indel_param_txt='Params = '
+                    for indel_param_cat in Global_models_noncoding[Intergenic_regions_models[1]][param_cat]:
+                        indel_param_txt+=str(iterations[indel_param_cat+sub_list_index[0]])
+                        indel_param_txt+=', '
+                    indel_param_txt=indel_param_txt[:-2]+'\n'
+                    indel_txt+=indel_param_txt
+                if param_cat == 'maxLen':
+                    indel_txt+='Max = '
+                    indel_txt+=str(int(iterations[Global_models_noncoding[Intergenic_regions_models[1]][param_cat][0]+sub_list_index[0]]))
+                    indel_txt+="\n"
+        content+=indel_txt
+        #Determining root genome sequence to be simulated
+        root_txt='[Root]\n'
+        #root_txt+=str(input.IntergenicRegion)
+        RootSeq=FastaSeq
+        root_txt+='Seq= %s\n' %RootSeq
+        #Determining number of simulation replicates
+        sim_txt='[Sim]\nReps = 1\n'
+        sim_txt+='Seed = 1234\n'
+        #Determining the output file of simulation
+        output_temp=str(output.IntergenicRegionParams)[:-7]
+        output_txt='[Output]\nFile = '
+        output_txt_script='%s.fas'% output_temp
+        output_txt+=output_txt_script
+        content+=root_txt+sim_txt+output_txt
+        txt.write(content)
+        txt.close()
+        
+        
+        
+        #call('%s %s'%(params.dawg, os.path.join('/'.join(str(output.IntergenicRegionParams).split('/')[:-2]),seq_id)),shell=True)
+        #output_to_read.append([output_txt_script,seq_id])
+#txt=open(str(output.IntergenicRegionParams),'w')
+#for output_txt in output_to_read:
+   # with open (output_txt[0],'r') as file:
+            #for records in SeqIO.parse (file,'fasta'):
+                    #txt.write('>%s_%s\n%s\n'%(records.id,output_txt[1],records.seq))
+#txt.close()
+
+            
+
+    
+
+    
+    
+

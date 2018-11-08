@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu May 10 12:56:11 2018
+
+@author: morte
+"""
+
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May  10 12:34:56 2018
+
+@author: morte
+"""
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule GenotypeVCFCaller:
+    input:
+        FastaSource = expand("{outputDIR}/{SequenceDIR}/{fasta_output}",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+        Combinedgvcf=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/CombinedGVCF",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        Genotypegvcf=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/GenotypeGVCF",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        GenotypegvcfIndex=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/GenotypeGVCF.idx",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        GenotypeScreentemps=temp(expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/GenotypeGVCF.gvcfScreentemps",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+    params:
+        gatk=config['gatk'],
+        ShellCallFile=config['ShellCallFile'],
+    threads: 5
+    run:
+        from subprocess import call
+        CallString="%s --java-options \"-Xmx2G\" GenotypeGVCFs -ploidy 1  -V %s -R %s -O %s &> %s" %(params.gatk,str(input.Combinedgvcf), str(input.FastaSource),str(output.Genotypegvcf),str(output.GenotypeScreentemps))
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)

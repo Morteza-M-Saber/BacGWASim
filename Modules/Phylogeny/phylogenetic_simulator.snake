@@ -1,0 +1,89 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Author:   Morteza.M Saber
+# Date:	    2018-02-01                                   
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Input:                                    user_input.txt                  
+# Output:                                   RealTree.nwk  
+#Purpose: If not provided by the user, the script simulates a phylogenetic tree
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Used for system calls.
+from subprocess import call
+
+#Used for path trimming
+import os
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# SNAKEMAKE RULE #
+rule simulate_phylogeny:
+    input: 
+        ref = config["user_input"]
+    output: 
+        outfile=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"])
+    params:
+        OutfilePath=expand("{outputDIR}/{PhylogeneticTreeDIR}",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        alfsim= config['alfsim'],
+        ShellCallFile=config['ShellCallFile']
+    run:
+        from shutil import copyfile,rmtree
+        with open (input.ref,'r') as file:
+                line=file.readline()
+                while line:
+                    if line.split(':')[0] == 'Path_to_phylogenetic_tree' :
+                        Path_to_phylogenetic_tree= str(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'Simulate_phylogenetic_tree' :
+                        Simulate_phylogenetic_tree= line.split('#')[0].split(':')[1].strip()
+                    elif line.split(':')[0] == 'birthRate' and Simulate_phylogenetic_tree :
+                        birthRate= float(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'deathRate' and Simulate_phylogenetic_tree :
+                        deathRate= float(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'NSpecies' and Simulate_phylogenetic_tree:
+                        NSpecies= int(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'ultrametric' and Simulate_phylogenetic_tree :
+                        ultrametric= str(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'mutRate' and Simulate_phylogenetic_tree :
+                        mutRate= float(line.split('#')[0].split(':')[1].strip())
+                    elif line.split(':')[0] == 'scaleTree' and Simulate_phylogenetic_tree :
+                        scaleTree= str(line.split('#')[0].split(':')[1].strip())
+                    line=file.readline()   
+        if Simulate_phylogenetic_tree == 'False' :
+            copyfile(Path_to_phylogenetic_tree, str(output.outfile))
+        elif Simulate_phylogenetic_tree == 'True' :
+            
+            content=str()
+            content+= "wdir := %s;\n\
+            mname := 'phylogenetic_tree';\n\
+            dbdir := 'DB/';\n\
+            dbAncdir := 'DBancestral/';\n\
+            unitIsPam := false:\n\
+            realseed := false;\n\
+            protStart := 1;\n\
+            minGeneLength := 5;\n\
+            gammaLengthDist := [1, 1];\n\
+            blocksize := 1:\n\
+            substModels := [SubstitutionModel('WAG')];\n\
+            indelModels := [IndelModel(0.00005, ZIPF, [1.821], 50)];\n\
+            rateVarModels := [RateVarModel()];\n\
+            modelAssignments := [1]:\n\
+            modelSwitchS := [[1]]:\n\
+            modelSwitchD := [[1]]:\n" % (params.OutfilePath[0])
+                
+            # parameters concerning the species tree
+            content+="treeType := 'BDTree';\n\
+                          birthRate := %s ;\n\
+                          deathRate := %s ;\n\
+                          NSpecies := %s  ;\n\
+                          ultrametric := %s ;\n\
+                          mutRate := %s ; \n\
+                          scaleTree := %s ; \n" %(birthRate,deathRate,NSpecies,ultrametric,mutRate,scaleTree)
+
+            txt=open(os.path.join(params.OutfilePath[0],'phylogenetic_tree_params.drw'),'w')
+            txt.write(content)
+            txt.close()
+            os.chdir(params.OutfilePath[0])
+            CallString='%s %s/phylogenetic_tree_params.drw'%(params.alfsim,params.OutfilePath[0])
+            call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+            call(CallString,shell=True)
+            copyfile(os.path.join(params.OutfilePath[0],'phylogenetic_tree','RealTree.nwk'), str(output.outfile))
+            rmtree(os.path.join(params.OutfilePath[0],'phylogenetic_tree'))

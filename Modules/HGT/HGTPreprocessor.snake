@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 18 10:46:26 2018
+
+@author: Masih
+
+Construct LD plot for the result of each simulation
+"""
+
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+import numpy as np
+
+rule HGT:
+    input:
+        Phylogeny=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        ALFParams=expand("{outputDIR}/{simulations}/0/ProteinCodingGene/0/alfsim.drw",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        HGT=expand("{outputDIR}/{SequenceDIR}/HGT/{iteration}.db",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],iteration=range(int(config['HGTRate']))),
+        ALFInput=expand("{outputDIR}/{SequenceDIR}/HGT/{iteration}.drw",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],iteration=range(int(config['HGTRate']))),
+    params:
+        ShellCallFile=config['ShellCallFile'],
+        HGTHelper1=config['ModuleDir']+'/HGT/HGT.py',
+        HGTHelper2=config['ModuleDir']+'/HGT/ALFParam.py',
+        python=config['PythonDir'],
+    run:
+        from subprocess import call
+        #Generating darwin files for HGT
+        CallString= '%s %s --DB %s --HGTRate %s --Output %s ' %(params.python,params.HGTHelper1,config['GeneDB'],
+                                                  config['HGTRate'],'/'.join(output.HGT[0].split('/')[:-1]))
+
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)
+        #Generating ALF param files for HGT simulation
+        CallString= '%s %s --ALFParams %s --HGTRate %s --Output %s ' %(params.python,params.HGTHelper2,str(input.ALFParams),
+                                                  config['HGTRate'],'/'.join(output.HGT[0].split('/')[:-1]))
+
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)

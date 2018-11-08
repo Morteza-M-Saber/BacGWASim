@@ -1,0 +1,17 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule SimulatorProteinCodingGenes:
+    input:
+        ProteinCodingGeneParams=expand("{outputDIR}/{simulations}/{{simulation_index}}/ProteinCodingGene/{{iteration}}/alfsim.drw",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output: 
+        results=directory(expand("{outputDIR}/{simulations}/{{simulation_index}}/ProteinCodingGene/{{iteration}}/ProtSim",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+        temps=expand("{outputDIR}/{simulations}/{{simulation_index}}/ProteinCodingGene/{{iteration}}/alfsim.temps",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        alfsim=config['alfsim'],
+        logNAME="ALF simulator." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        callString='%s %s &> %s'%(params.alfsim, input.ProteinCodingGeneParams,str(output.temps))
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True)     
+        

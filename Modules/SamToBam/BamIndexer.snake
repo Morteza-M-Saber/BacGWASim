@@ -1,0 +1,25 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Author:   Morteza.M Saber
+# Date:	    2018-04-26                                   
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Input:                                    .gff,.fa                  
+# Output:                                   ._protein_coding_gene.db,._RNA_gene.fa,._intergenic_region.fa,._repeat_region.fa 
+#Purpose: Index Bam files required for GATK haplotype caller. 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Used for system calls.
+from subprocess import call
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# SNAKEMAKE RULE #
+rule BamIndexer:
+    input: 
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bam.mapq20",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output: 
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bam.mapq20.bai",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        samtools=config["samtools"],
+    run:      
+        call("%s index %s " %(str(params.samtools),str(input)),shell=True)

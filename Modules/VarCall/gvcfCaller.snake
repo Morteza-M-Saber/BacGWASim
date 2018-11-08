@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May  4 12:15:56 2018
+
+@author: morte
+"""
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule gvcfCaller:
+    input:
+        FastaSource = expand("{outputDIR}/{SequenceDIR}/{fasta_output}",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+        bamsort=expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bamSorted",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        gvcf=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/{{name}}.g.vcf",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        gvcfIndex=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/{{name}}.g.vcf.idx",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        Screentemps=temp(expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/{{name}}.gvcfScreentemps",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+    params:
+        gatk=config['gatk'],
+        ShellCallFile=config['ShellCallFile']
+    run:
+        from subprocess import call
+        CallString="%s --java-options \"-Xmx500M\" HaplotypeCaller -ploidy 1 -ERC GVCF -R %s -I %s -O %s &> %s" %(params.gatk,str(input.FastaSource),str(input.bamsort),str(output.gvcf),str(output.Screentemps))
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)

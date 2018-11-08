@@ -1,0 +1,9 @@
+Transform GATK vcf file to plnik .ped and .map files:
+/home/masih/Baterial_simulator/vcftools_0.1.13/bin/vcftools --vcf GenotypeGVCF --plink --chrom-map chromMap  --out plinkFileTest
+
+
+--chrom-map file format:
+ChromosomeNameInVCFfile	ChromosomeNameINpinkOutputFile  #This file will tell vcftools what to name chromosomes present in input .vcf file in the ouptut plinkformat .map file which are not human chromosomes and hence not defined for VCFTOOLS
+
+To convert vcf files to plink .ped/.map files and converting chromosome names to be used by haploview:
+/home/masih/BacterialSimulator/vcftools_0.1.13/bin/vcftools --vcf /scratch/masih/output500/simulations/0/VarCall/CombinedVCF --plink --chrom-map /scratch/masih/output500/Sequences/ChromMap.tsv --maf 0.1  --out haploview	

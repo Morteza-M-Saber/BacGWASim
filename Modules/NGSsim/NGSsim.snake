@@ -1,0 +1,17 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule NGSsim:
+    input:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.fsa",outputDIR=config["outputDIR"],simulations=config["simulations"])
+    output:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.fq",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        temp(expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.aln",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+        temp(expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}_screen.temps",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+    params:
+        art_illumina=config['art_illumina'],
+        ShellCallFile=config['ShellCallFile'],
+    run:
+        from subprocess import call
+        CallString="%s -ss HS25 -sam -i %s -p -l 150 -f 20 -m 200 -s 10 -o %s &> %s" %(params.art_illumina,str(input),str(output[0])[:-3],str(output[2]))
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)

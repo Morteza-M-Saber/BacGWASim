@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May  10 12:34:56 2018
+
+@author: morte
+"""
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule CombinedVCFCaller:
+    input:
+        vcfZip=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/{name}.vcf.gz",outputDIR=config["outputDIR"],simulations=config["simulations"],name=names),
+
+    output:
+        Combinedvcf=expand("{outputDIR}/{simulations}/{{simulation_index}}/VarCall/CombinedVCF",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        bcftools=config['bcftools'],
+        logNAME="VCF Combiner." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    threads:4
+    run:
+        from subprocess import call
+        inputs_with_prefix =''
+        for items in input.vcfZip:
+                inputs_with_prefix+= '  %s'%items  
+        callString="%s merge  %s -0 --missing-to-ref --threads %s >  %s" %(params.bcftools,inputs_with_prefix,threads, str(output.Combinedvcf))
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True)
+        
+        

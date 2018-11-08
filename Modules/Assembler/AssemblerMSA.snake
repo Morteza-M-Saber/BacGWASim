@@ -1,0 +1,99 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule AssemblerMSA:
+    input:
+        phylogeny=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        PG=expand("{outputDIR}/{simulations}/{{simulation_index}}/ProteinCodingGene/ProtSim",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        IR=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/DB/IR.fsa",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        RG=expand("{outputDIR}/{simulations}/{{simulation_index}}/RNAGenes/DB/RG.fsa",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        RR=expand("{outputDIR}/{simulations}/{{simulation_index}}/RepeatRegions/DB/RR.fsa",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        JSON=expand("{outputDIR}/{SequenceDIR}/{fasta_output}.json",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=config["fasta_output"]),
+    output:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/MSA.fsaMAS",outputDIR=config["outputDIR"],simulations=config["simulations"])
+    run:
+        #Total types of sequences
+        total_types={'Protein_coding_gene':['CDS'],
+        'RNA_gene':['tRNA','rRNA','ncRNA','tmRNA','transcript','misc_feature'],
+        'Repeat_region':['Pseudogene','repeat_region'],
+        'Intergenic_region':['IGR']}
+        #Reading coordinates of all sequences
+        import json
+        with open(str(input.JSON)) as f:
+                total_types_seq = json.load(f)
+        coord_dict={}
+        for item0 in total_types:
+          for item in total_types[item0]:
+            for item2 in total_types_seq[item0][item]:
+               if item == 'CDS':
+                   gene_id=item2[6]
+                   chromo,st,en,strand=item2[0],item2[1],item2[2],item2[3]
+                   if chromo not in coord_dict:
+                       coord_dict[chromo]=[]
+                   coord_dict[chromo].append([gene_id,st,en,strand])
+               else:
+                   gene_id=[item3.split('=')[1].strip() for item3 in item2[-1].split(';') if item3.split('=')[0]=='ID'][0]
+                   chromo,st,en,strand=item2[0],item2[1],item2[2],item2[3]
+                   if chromo not in coord_dict:
+                       coord_dict[chromo]=[]
+                   coord_dict[chromo].append([gene_id,st,en,strand])
+        coord_dict_sort={}
+        chromo_list=[]
+        for chromo in coord_dict:
+            chromo_list.append(chromo)
+            coord_dict_sort[chromo]=sorted(coord_dict[chromo], key = lambda x: int(x[1]))
+        #Reading the number of simulatd species
+        from Bio import Phylo, SeqIO
+        tree= Phylo.read(str(input.phylogeny),'newick')
+        names=sorted([item.split(')')[0].replace('=','').replace("'",'') for item in str(tree).split('name')[1:]])
+        #Creating genome sequence of each simulated species according to the coordinate of the root and simulated sequences 
+        simulated_seq_dict={}
+        assembled_dict={}
+        from os import listdir
+        prot_msa= listdir('%s/MSA'%(str(input.PG)))
+        txt=open(str(output),'w')
+        for specs in names:
+            simulated_seq_dict[specs]={}
+            assembled_dict[specs]={}
+            for msa in prot_msa:
+                if msa[-6:]== 'dna.fa':
+                    seq_id=msa.split('_')[1]
+                    with open ('%s/MSA/%s'%(str(input.PG),msa),'r') as PGSeq:
+                        for records in SeqIO.parse(PGSeq,'fasta'):
+                            spec_name=records.id.split('/')[0]
+                            spec_name_cor=spec_name[0]+'E'+spec_name[1:]
+                            if spec_name_cor == specs:
+                               simulated_seq_dict[specs][seq_id]=str(records.seq) 
+            with open (str(input.IR),'r') as IRSeq:
+                for records in SeqIO.parse(IRSeq,'fasta'):
+                     seq_name,seq_id=records.id.split('_')[0],records.id.split('_')[1]
+                     if seq_name == specs:
+                         simulated_seq_dict[seq_name][seq_id]=str(records.seq)
+            with open (str(input.RG),'r') as RGSeq:
+                for records in SeqIO.parse(RGSeq,'fasta'):
+                     seq_name,seq_id=records.id.split('_')[0],records.id.split('_')[1]
+                     if seq_name == specs:
+                         simulated_seq_dict[seq_name][seq_id]=str(records.seq)
+            with open (str(input.RR),'r') as RRSeq:
+                for records in SeqIO.parse(RRSeq,'fasta'):
+                     seq_name,seq_id=records.id.split('_')[0],records.id.split('_')[1]
+                     if seq_name == specs:
+                         simulated_seq_dict[seq_name][seq_id]=str(records.seq)
+            #Making the assembly
+            #print(simulated_seq_dict[specs].keys())
+            from Bio.Seq import Seq
+            for chromo in chromo_list:
+                chromoSeq=str()
+                for seqID in coord_dict_sort[chromo]:
+                    if seqID[3] == '+':
+                        chromoSeq+=simulated_seq_dict[specs][seqID[0]]
+                    elif seqID[3] == '-':
+                        chromoSeq+=str(Seq(simulated_seq_dict[specs][seqID[0]]).reverse_complement())
+                assembled_dict[specs][chromo]=chromoSeq
+            
+            for chromo in chromo_list:
+                txt.write('>%s\n%s\n'%(chromo,assembled_dict[specs][chromo]))
+        txt.close()
+            
+            
+        
+        

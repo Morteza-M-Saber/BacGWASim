@@ -1,0 +1,15 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule SimulatorIntergenicRegions:
+    input:
+        IntergenicRegionParams=expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/{{iteration}}/dawg.params",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/IntergenicRegions/{{iteration}}/dawg.fas",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        dawg=config['dawg'],
+        logNAME="InterGenic Region Simulator." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        callString='%s %s'%(params.dawg, input.IntergenicRegionParams)
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True)  

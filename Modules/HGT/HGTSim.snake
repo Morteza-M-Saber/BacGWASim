@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 18 10:46:26 2018
+
+@author: Masih
+
+Simulating HGT genes
+"""
+
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+
+rule HGTSim:
+    input:
+        HGTInput=expand("{outputDIR}/{SequenceDIR}/HGT/{{iteration}}.drw",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"]),
+    output:
+        results=directory(expand("{outputDIR}/{SequenceDIR}/HGT/{{iteration}}/ProtSim",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"])),
+        temps=expand("{outputDIR}/{SequenceDIR}/HGT/{{iteration}}/alfsim.temps",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"]),
+
+    params:
+        alfsim=config['alfsim'],
+        logNAME="HGT simulator." #+ strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        callString='%s %s &> %s'%(params.alfsim, input.HGTInput,str(output.temps))
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True)  

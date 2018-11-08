@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 18 10:46:26 2018
+
+@author: Masih
+
+Simulating HGT genes
+"""
+
+
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+
+rule HGTTransfer:
+    input:
+        Phylogeny=expand("{outputDIR}/{PhylogeneticTreeDIR}/RealTree.nwk",outputDIR=config["outputDIR"],PhylogeneticTreeDIR=config["PhylogeneticTreeDIR"]),
+        HGTDir=directory(expand("{outputDIR}/{SequenceDIR}/HGT/{iteration}/ProtSim",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],iteration=range(int(config['HGTRate'])))),
+    output:
+        NodeSelect=expand("{outputDIR}/{SequenceDIR}/HGT/HGT.json",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"]),
+        HGTOut=expand("{outputDIR}/{simulations}/{simulation_index}/Assembly/HGTTransfer.txt",outputDIR=config["outputDIR"],simulations=config["simulations"],simulation_index=simulation_index_dict.keys()),
+        
+
+    params:
+        ShellCallFile=config['ShellCallFile'],
+        HGTHelper3=config['ModuleDir']+'/HGT/NodeFinder.py',
+        HGTHelper4=config['ModuleDir']+'/HGT/HGTTransfer.py',
+        python=config['PythonDir'],
+        logNAME="HGT Transfer." #+ strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        #Find random nodes for HGT to occur
+        CallString= '%s %s %s --NodeLen %s --HGTRate %s --Output %s ' %(params.python,params.HGTHelper3,str(input.Phylogeny),
+                                                  config['NodeLen'],config['HGTRate'],str(output.NodeSelect))
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)
+        #Transfer simulated HGT genes to their destination node
+        for outs in output.HGTOut:
+            CallString= '%s %s --HGTNode %s --HGTRate %s  --HGTSource %s --HGTDestination %s ' %(params.python,params.HGTHelper4,str(output.NodeSelect),
+                                                  config['HGTRate'],'/'.join(input.HGTDir[0].split('/')[:-2]),'/'.join(outs.split('/')[:-1]))
+            call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+            call(CallString,shell=True)            
+        
+        

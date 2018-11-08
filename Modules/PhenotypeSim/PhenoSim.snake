@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jun  6 13:37:32 2018
+
+@author: morte
+"""
+
+rule PhenoSim:
+    input:
+        PlinkFormatBed=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/PlinkFormat.bed",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        PlinkFormatFam=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/PlinkFormat.fam",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        PlinkFormatBim=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/PlinkFormat.bim",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        CausalLoci=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/{{phenotype_index}}/CausalLoci.snplist",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        gtcaPar=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/{{phenotype_index}}/gatc.par",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        gtcaPhen=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/{{phenotype_index}}/gatc.phen",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        gtcaLog=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/{{phenotype_index}}/gatc.log",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        gtcaPhenoSimScreentemps=expand("{outputDIR}/{simulations}/{{simulation_index}}/PhenotypeSim/{{phenotype_index}}/gatcPhenoSim.Screentemps.log",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        gtca= config['gtca'],
+        ShellCallFile=config['ShellCallFile'],
+    run:
+  
+        from subprocess import call
+        CallString="%s --bfile %s --simu-cc %s %s --simu-causal-loci %s --simu-hsq %s --simu-k %s --simu-rep %s --out %s &> %s" %(params.gtca,str(input.PlinkFormatBed)[:-4],config['GWASCase'],config['GWASControl'],str(input.CausalLoci),config['GWASHeritability'],config['GWASDiseasePrevalence'],config['GWASPhenSimRep'],str(output.gtcaPar)[:-4], str(output.gtcaPhenoSimScreentemps))
+        call('echo %s >> %s' %(CallString,params.ShellCallFile),shell=True)
+        call(CallString,shell=True)
+
+
+
+
+
+
+        
+

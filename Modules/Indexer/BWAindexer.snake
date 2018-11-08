@@ -1,0 +1,45 @@
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Author:   Morteza.M Saber
+# Date:	    2018-04-26                                   
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# Input:                                    .gff,.fa                  
+# Output:                                   ._protein_coding_gene.db,._RNA_gene.fa,._intergenic_region.fa,._repeat_region.fa 
+#Purpose: Recieves genome in fasta format and indexes it by BWA, samtools and gatk. These index
+#	files are required for analysis by these tools.
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# Used for system calls.
+from subprocess import call
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# SNAKEMAKE RULE #
+rule BWAIndexer:
+    input: 
+        fasta_file = config["fasta_file"]
+    output: 
+        index= expand("{outputDIR}/{SequenceDIR}/{fasta_output}.sa",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+        GATKindex= expand("{outputDIR}/{SequenceDIR}/{fasta_output}.dict",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1][:-4]),
+        screentempsbwa= expand("{outputDIR}/{SequenceDIR}/{fasta_output}.screentempsbwa",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+        screentempsgatk= expand("{outputDIR}/{SequenceDIR}/{fasta_output}.screentempsgatk",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+        ref= expand("{outputDIR}/{SequenceDIR}/{fasta_output}",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"],fasta_output=str(config["fasta_file"]).split('/')[-1]),
+    params:
+        OutfilePath= expand("{outputDIR}/{SequenceDIR}",outputDIR=config["outputDIR"],SequenceDIR=config["SequenceDIR"]),
+        bwa= config["bwa"],
+        samtools=config["samtools"],
+        gatk=config["gatk"],
+        ShellCallFile=config['ShellCallFile'],
+    run:
+        call("cp %s %s"%(str(input.fasta_file), str(output.ref)),shell=True)
+        RefDest='/'.join(str(output.index).split('/')[:-1])+'/'+str(input.fasta_file).split('/')[-1]
+        command="%s index %s" %(str(params.bwa),RefDest)        
+        CallString1="%s index %s &> %s" %(str(params.bwa),RefDest,RefDest+'.screentempsbwa')
+        CallString2="%s faidx %s "%(params.samtools,RefDest)
+        CallString3="%s --java-options \"-Xmx1G\" CreateSequenceDictionary -R %s -O %s &> %s"%(params.gatk,RefDest,str(output.GATKindex),RefDest+'.screentempsgatk')
+        call('echo %s >> %s' %(CallString1,params.ShellCallFile),shell=True)
+        call(CallString1,shell=True)
+        call('echo %s >> %s' %(CallString2,params.ShellCallFile),shell=True)
+        call(CallString2,shell=True)
+        call('echo %s >> %s' %(CallString3,params.ShellCallFile),shell=True)
+        call(CallString3,shell=True)

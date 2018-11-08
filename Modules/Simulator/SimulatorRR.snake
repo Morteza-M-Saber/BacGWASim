@@ -1,0 +1,15 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule SimulatorRepeatRegions:
+    input:
+        RepeatRegionParams=expand("{outputDIR}/{simulations}/{{simulation_index}}/RepeatRegions/{{iteration}}/dawg.params",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/RepeatRegions/{{iteration}}/dawg.fas",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    params:
+        dawg=config['dawg'],
+        logNAME="RepeatRegion Simulator." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+    run:
+        from subprocess import call
+        callString='%s %s'%(params.dawg, input.RepeatRegionParams)
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + config["ShellCallFile"], shell=True)
+        call(callString, shell=True)  

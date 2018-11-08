@@ -1,0 +1,16 @@
+configfile: "/home/masih/BacterialSimulator/Pipeline/ConfigFile.yaml"
+
+rule BamSorter:
+    input:
+        expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bam.mapq20",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+    output:
+        bamsort=expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bamSorted",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        bamsortIndex=expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bamSorted.bai",outputDIR=config["outputDIR"],simulations=config["simulations"]),
+        screentemps=temp(expand("{outputDIR}/{simulations}/{{simulation_index}}/Assembly/{{name}}.bamSortedScreentemps",outputDIR=config["outputDIR"],simulations=config["simulations"])),
+    params:
+        samtools=config['samtools'],
+    threads: 4
+    run:
+        from subprocess import call
+        call("%s sort  -@ %s %s -o %s &> %s" %(params.samtools,threads,str(input),str(output.bamsort),str(output.screentemps)),shell=True)
+        call("%s index %s " %(params.samtools,str(output.bamsort)),shell=True)
