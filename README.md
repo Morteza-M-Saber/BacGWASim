@@ -26,6 +26,26 @@ Between parenthesis the versions the script was tested against:
 
 If visualization parameter is set to True:
 
-**Matplotlib** (3.0.1)    
+**Matplotlib** (3.0.1)     
 **ete3** (3.1.1)
 
+# Installation and Usage
+
+BacGWASim is build based on Snakemake and can be installed as following:
+
+1)  clone workflow into working directory   
+```    
+
+git clone https://bitbucket.org/user/myworkflow.git path/to/workdir
+cd path/to/workdir 
+
+```
+2) edit config file to include the path to prerequisites and workflow as needed
+```
+vim config.yaml
+```
+
+3) execute workflow, deploy software dependencies via conda
+```
+snakemake -n --use-conda
+```
