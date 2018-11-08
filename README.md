@@ -56,20 +56,24 @@ python BacGWASim.py -h
 ```
 Output:
 ```
-python BacGWASim.py -h
 Usage: BacGWASim.py [options]
 
 Options:
-  -h, --help            show this help message and exit
+  -h, --help            show this help message and exit   
+
   -S SETTING, --Setting=SETTING
-                        Absolute path to the setting file [required]
+                        Absolute path to the setting file [required]    
+
   -J CORENUMBER, --CoreNumber=CORENUMBER
-                        Use at most N cores in parallel (default: 1)
+                        Use at most N cores in parallel (default: 1)    
+
   -D                    Print the directed acyclic
-                        graph of jobs. (Default:False)
+                        graph of jobs. (Default:False)    
+
   -R                    Print the dependency graph of rules.
                         *Caution*Rulegraph can not be set to True if
-                        DirectedAcyclicGraph is set to True (default: False)
+                        DirectedAcyclicGraph is set to True (default: False)    
+
   -Q                    Do not output any progress or rule information
                         (default: False)
 ```
