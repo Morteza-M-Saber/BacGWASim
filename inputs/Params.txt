@@ -1,0 +1,217 @@
+#---------------------
+# Author: Morteza.M Saber
+# Date: 2017-11-10
+#---------------------
+
+
+#################################
+# ----- ALFSIM parameters for Protein sequence simulation ------ #
+#################################
+
+
+
+
+#1) Models for simulating nucleotide substitution
+#1-1) Codon models: 
+substModel_codon: ECM # Alternative models: 'CPAM','ECM', 'ECMu', Variable_type: Categorical
+
+#1-2) Nucleotide models:
+#1-2-1) TN93
+substModel_TN93: TN93 #Variable_type: Categorical
+substModel_TN93_alpha1: 0.3 #Variable_type: Interval
+substModel_TN93_alpha2: 0.7 #Variable_type: Interval
+substModel_TN93_beta: 0.7   #Variable_type: Interval
+substModel_TN93_frequencies: {0.25;0.25;0.25;0.25} #Variable_type: Interval
+substModel_TN93_neutral_DNA: false  #Variable_type: Categorical 
+
+#1-2-2) HKY
+substModel_HKY: HKY
+substModel_HKY_alpha: 0.3
+substModel_HKY_beta: 0.7
+substModel_HKY_frequencies: {0.25;0.25;0.25;0.25}
+substModel_HKY_neutral_DNA: false
+
+#1-2-3) F84
+substModel_F84: F84
+substModel_F84_kappa: 0.3
+substModel_F84_beta: 0.7
+substModel_F84_frequencies: {0.25;0.25;0.25;0.25}
+substModel_F84_neutral_DNA: false
+
+#1-2-4) GTR
+substModel_GTR: GTR
+substModel_GTR_alpha: 0.9850577
+substModel_GTR_beta: 0.8185017
+substModel_GTR_gamma: 0.3737484
+substModel_GTR_delta: 0.5641096
+substModel_GTR_epsilon: 0.2259800
+substModel_GTR_zeta: 1
+substModel_GTR_frequencies: {0.301807845032044,0.197996188588821,0.199163647868774,0.301032318510361} #S.pneumonia nucleotide frequencies
+substModel_GTR_neutral_DNA: false
+
+
+#2) models for simulating insertions and deletions
+
+#2-1) Zipfian model
+indel_model_ZIPF: ZIPF
+indel_gainRate_ZIPF: 0.001 #Rate at which insertions occur at each site of the sequence
+indel_gainParameters_ZIPF: 1.821 # Exponent of zipfian distribution
+indel_gainMaxLen_ZIPF: 50 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+indel_lossRate_ZIPF: 0.003
+
+#2-2) Qian-Goldestein model
+indel_model_QG: QG
+indel_gainRate_QG: 0.003 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_QG: 300 # Evolutionary sclae factor for the generalized Qian-Goldstein distribution. 
+indel_gainMaxLen_QG: 50 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+indel_lossRate_QG: 0.003
+
+#2-3) Geometric model
+indel_model_GEOM: GEOM
+indel_gainRate_GEOM: 0.003 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_GEOM: 0.3 # Proportion in range of (0,1] 
+indel_gainMaxLen_GEOM: 50 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+indel_lossRate_GEOM: 0.003
+
+#2-4) Custom model
+indel_model_Custom: CUSTOM
+indel_gainRate_Custom: 0.0252 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_Custom: 0.320238687,0.140726007,0.134261561,0.085529587,0.055693685,0.050223769,0.032819493,0.026852312,0.032819493,0.019890602,0.018896072,0.020885132,0.012928891,0.007956241,0.008950771,0.008950771,0.006464446,0.006961711,0.004972650,0.003978120 # Proportion in range of (0,1], probability of indel at specific size with array-lenght determined by maxlen 
+indel_gainMaxLen_Custom: 20 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+
+
+
+##3) Models for among site rate variability
+#3-1) Gamma distribution
+rateVar_model_Gamma: Gamma
+rateVar_model_Gamma_alpha: 1 # Shape parameter for Gamma distribution
+rateVar_model_Gamma_areas: 5 # Maximum number of areas with different rate within a gene
+rateVar_model_Gamma_motifFreq: 0.01 # Proportion of invariable sites 
+
+#3-2) Poisson distribution
+rateVar_model_poisson: Poisson
+rateVar_model_poisson_areas: 5 # Maximum number of domains per gene
+rateVar_model_poisson_motifFreq:0.01 # Proportion of invariable sites 
+
+#4) Rate variation among sequences
+amongGeneDistr: None #distribution of rates among genes, None: No variation, Gamma: Gamma-distributed rate variation among genes
+aGAlpha: 1	# Shape parameter of among gene rate distribution
+
+#5) Parameters concerning gene duplication
+geneDuplRate: 0 #Rate of gene duplications (relative to substitutions)
+transDupl: 0 # Probability of translocation after duplication
+numberDupl: 0 # Maximum number of consecutvie genes involved in one duplication event
+fissionDupl: 0 # Probabililty of a fission event after the duplication of a single gene
+fusionDupl: 0 # Probability of a fusion event after the duplication of two or more genes
+P_pseudogene: 0 # Probability of duplicate becoming a pseudogene (permanent rate change for duplicatie)
+P_neofunc: 0 # Probability of duplicate undergoing neofunctionalization ( temporary rate change for duplicate)
+P_subfunc: 0 # Probability of both copies undergoing subfunctionalization ( temporary rate change for original and duplicate)
+
+#6) Parameters concerning gene loss
+geneLossRate: 0 # Rate of gene losses (relative to substitutions)
+numberLoss: 0 # Maximum number of consecutive genes involved in one loss event. 
+
+#7) Parameters concerning Lateral Gene Transfer
+lgtRate: 0.2 # Rate of single lateral gene transfer (relative to substitution)
+orthRep: 1 # Proportion of lateral gene transfers that are orthologous replacements, rest are novel gene aquisition
+lgtGRate: 0 # Rate of lateral transfers of groups of genes
+lgtGSize: 0 #Maximum number of genes which can be transferred in one event
+
+#8) Parameters concerning Genome Rearrangement
+invers: 0.000 # Rate of gene inversions (Relative to substitutions)
+invSize: 0 # Maximum number of genes which are inverted in one inversion event. 
+transloc: 0 # Rate of gene translocations (relative to substitutions)
+transSize: 0 # Maximum number of genes which are translocated in one go
+invtrans: 0 #Rate of inverted translocations (relative to substitutions)
+
+#9) Parameters concerning gene Fusion and Fission
+fissionRate: 0 # Rate of gene fissions without prior duplications (Relative to substitutions)
+fusionRate: 0 #Rate of gene fusions without prior duplications of fused genes (relative to substitutions)
+numberFusion:0 # Maximum number of genes fused in one event 
+
+#################################
+# ----- DAWG parameters for noncoding DNA simulation ------ #
+#################################
+
+#10) Nucleotide models:
+#10-1) GTR
+substModel_GTR_nc: GTR,GTR,GTR
+substModel_GTR_alpha_nc: 0.9850577,0.9850577,0.9850577
+substModel_GTR_beta_nc: 0.8185017,0.8185017,0.8185017
+substModel_GTR_gamma_nc: 0.3737484,0.3737484,0.3737484
+substModel_GTR_delta_nc: 0.5641096,0.5641096,0.5641096
+substModel_GTR_epsilon_nc: 0.2259800,0.2259800,0.2259800
+substModel_GTR_zeta_nc: 1,1,1
+substModel_GTR_frequencies_nc: {0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25}
+
+
+#10-2) TN93
+substModel_TN93_nc: TN93,TN93,TN93 #Variable_type: Categorical
+substModel_TN93_alpha1_nc: 0.3,0.3,0.3 #Variable_type: Interval
+substModel_TN93_alpha2_nc: 0.7,0.7,0.7 #Variable_type: Interval
+substModel_TN93_beta_nc: 0.7,0.7,0.7   #Variable_type: Interval
+substModel_TN93_frequencies_nc: {0.301807845032044,0.197996188588821,0.199163647868774,0.301032318510361},{0.301807845032044,0.197996188588821,0.199163647868774,0.301032318510361},{0.301807845032044,0.197996188588821,0.199163647868774,0.301032318510361} #Variable_type: Interval
+
+#10-3) HKY
+substModel_HKY_nc: HKY,HKY,HKY
+substModel_HKY_alpha_nc: 0.3,0.3,0.3
+substModel_HKY_beta_nc: 0.7,0.7,0.7
+substModel_HKY_frequencies_nc: {0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25}
+
+#10-4) F84
+substModel_F84_nc: F84,F84,F84
+substModel_F84_kappa_nc: 0.3,0.3,0.3
+substModel_F84_frequencies_nc: {0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25}
+
+#10-5) K2P
+substModel_K2P_nc: K2P,K2P,K2P 
+substModel_K2P_transition_nc: 0.3,0.3,0.3 
+substModel_K2P_transversion_nc: 0.7,0.7,0.7 
+substModel_K2P_frequencies_nc: {0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25} 
+
+#10-6) K3P
+substModel_K3P_nc: K2P,K2P,K2P 
+substModel_K3P_alpha_nc: 0.3,0.3,0.3 
+substModel_K3P_beta_nc: 0.7,0.7,0.7 
+substModel_K3P_gamma_nc: 0.7,0.7,0.7 
+substModel_K3P_frequencies_nc: {0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25},{0.25;0.25;0.25;0.25} 
+
+#11) models for simulating insertions and deletions in noncoding DNA
+#11-1) Geometric model
+indel_model_GEOM_nc: GEOM,GEOM,GEOM
+indel_gainRate_GEOM_nc: 0.003,0.003,0.003 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_GEOM_nc: 0.3,0.3,0.3 # Proportion in range of (0,1] 
+indel_gainMaxLen_GEOM_nc: 50,50,50 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+
+#11-2) Geometric model
+indel_model_PL_nc: PL,PL,PL
+indel_gainRate_PL_nc: 0.00175,0.00175,0.000175 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_PL_nc: 1.5,1.5,1.5 # Proportion in range of (0,1] 
+indel_gainMaxLen_PL_nc: 50,50,50 #Insertions are limited to this maximum length. Useful to cap the tail of the indel length distribution
+
+#11-3) Custom model
+indel_model_US_nc: US,US,US
+indel_gainRate_US_nc: 0.00175,0.00175,0.00175 # Rate at which insertions occur at each site of the sequence
+indel_gainParameters_US_nc: 0.320238687;0.140726007;0.134261561;0.085529587;0.055693685;0.050223769;0.032819493;0.026852312;0.032819493;0.019890602;0.018896072;0.020885132;0.012928891;0.007956241;0.008950771;0.008950771;0.006464446;0.006961711;0.004972650;0.003978120,0.320238687;0.140726007;0.134261561;0.085529587;0.055693685;0.050223769;0.032819493;0.026852312;0.032819493;0.019890602;0.018896072;0.020885132;0.012928891;0.007956241;0.008950771;0.008950771;0.006464446;0.006961711;0.004972650;0.003978120,0.320238687;0.140726007;0.134261561;0.085529587;0.055693685;0.050223769;0.032819493;0.026852312;0.032819493;0.019890602;0.018896072;0.020885132;0.012928891;0.007956241;0.008950771;0.008950771;0.006464446;0.006961711;0.004972650;0.003978120 # Proportion in range of (0,1] 
+
+
+
+##12) Models for among site rate variability
+#12-1) Gamma distribution
+rateVar_model_Gamma_nc: Gamma,Gamma,Gamma
+rateVar_model_Gamma_alpha_nc: 1,1,1 # Shape parameter for Gamma distribution
+rateVar_model_Gamma_invariant_site_ratio_nc: 0.01,0.01,0.01# Proportion of invariable sites
+
+#################################
+# ----- Phenotype simulation parameters ------ #
+#################################
+effect_size_ODR:2,3,5,7,8,10,15,20,50,100
+causal_variant_Num:10,20,50,100,150,200,300,400,500,1000
+heritability:1
+
+
+
+
+
+
+ 

@@ -1,0 +1,29 @@
+#       -- phylogenetic tree --        #
+
+#Path to user-defined phylogenetic tree 
+Path_to_phylogenetic_tree: /home/masih/BacterialSimulator/Pipeline/inputs/RealTree3000.nwk #Do not use quotation mark
+
+# Simulated phylogenetic tree if not provided by the user
+Simulate_phylogenetic_tree: True
+
+#       -- Parameters for simulating the Birth-Death phylogenetic tree --        #
+# BirthRate, lambda of birth-death process.
+birthRate: 1
+# DeathRate, Mu of birth-death process.
+deathRate: 0
+# Number of leaf species the tree should have.
+NSpecies: 3000
+# Should the tree be ultrametric
+ultrametric: false
+# Distance from the root to the deepest leaf
+mutRate: 0.00001 
+#Should the tree be scaled to match exactly the distance from the root to leaf defined above
+scaleTree: false 
+
+
+#       -- Models of evolution of bacterial genome (Nucleotide substitution/indel/rate variation) --        #
+	
+Protein_coding_genes:substModel_codon,indel_model_Custom,rateVar_model_Gamma
+Intergenic_regions:substModel_GTR,indel_model_US,rateVar_model_Gamma
+RNA_genes:substModel_GTR,indel_model_US,rateVar_model_Gamma
+Repeat_regions:substModel_GTR,indel_model_US,rateVar_model_Gamma
