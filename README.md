@@ -11,9 +11,13 @@ BacGWASim is designed to simulate whole-genomes and phenotypes of large bacteria
 Between parenthesis the versions the script was tested against:
 
 **python3+** (3.6.6)
+
 **Snakemake** (5.3.0)
+
 **ALFsim** (1.0.0)
+
 **DAWG** (2.0.0)
+
 **numpy** (1.15.2)
 **scipy** (1.1.0)
 **pandas** (0.23.4)
