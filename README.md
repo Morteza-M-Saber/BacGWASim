@@ -50,6 +50,9 @@ vim config.yaml
 snakemake -n --use-conda
 ```
 # Usage
+BacGWASim accepts a bacterial genome in fasta format and its annotation in GFF format. The phylogenetic tree can be user-defined or simulated by BacGWASim using a birth-death model.     
+The program outputs the simulated genotypes and phenotypes for each species of the phylogenetic tree.
+
 To get the parameter information of the tool:
 ```
 python BacGWASim.py -h
