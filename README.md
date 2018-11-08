@@ -19,17 +19,25 @@ Between parenthesis the versions the script was tested against:
 **DAWG** (2.0.0)
 
 **numpy** (1.15.2)
+
 **scipy** (1.1.0)
+
 **pandas** (0.23.4)
+
 **ART** (2016.06.05)
+
 **Samtools** (1.9.0)
+
 **BWA** (0.7.17)
+
 **GATK** (3.8.0)
+
 **Plink** (1.9)
 **gcta** (1.26.0)
 
 If visualization parameter is set to True:
 
 **Matplotlib** (3.0.1)
+
 **ete3** (3.1.1)
 
