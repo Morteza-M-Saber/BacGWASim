@@ -1,51 +1,55 @@
 #User-specified Info
-user_input: /home/masih/BacterialSimulator/Pipeline/inputs/user_input.txt
-GFF_file: /home/masih/BacterialSimulator/Pipeline/inputs/GCF_000007045.1_ASM704v1_genomic.gff
-fasta_file: /home/masih/BacterialSimulator/Pipeline/inputs/GCF_000007045.1_ASM704v1_genomic.fna
+user_input: inputs/user_input.txt #Path to parameter file
+GFF_file: GCF_000007045.1_ASM704v1_genomic.gff #Path to genome annotation
+fasta_file: /GCF_000007045.1_ASM704v1_genomic.fna #Path to genome sequence in fasta format
 
-outputDIR: /project/6006375/masih/Final3000_test4
+outputDIR: Output/simulationDir #Path to the output directory
 fasta_output: Streptococcus_pneumonia_r6 #Species Name
-ShellCallFile: /home/masih/BacterialSimulator/Pipeline/ShellCallFile
-ModuleDir: /home/masih/BacterialSimulator/Pipeline/Modules
+ShellCallFile: Params/ShellCallFile #Path to ShellCallFile to writ the commands run for each job
+ModuleDir: Modules #Path to Modules directory
 
 #Sequence input parameters
 seq_types: Protein_coding_gene,Intergenic_region,RNA_gene,Repeat_region
 SequenceDIR: Sequences
 platform: illumina 
 #How many cateogries to be used for each Sequence types, this equal to maximum number of parallel simulation for each category
-Protein_coding_gene_CatSize: 15
-RNA_gene_CatSize: 1
-Intergenic_region_CatSize: 10
-Repeat_region_CatSize: 1
+Protein_coding_gene_CatSize: 15 #Number of parallel simulation for protein coding genes
+RNA_gene_CatSize: 1  #Number of parallel simulation for RNA genes
+Intergenic_region_CatSize: 10  #Number of parallel simulation for Intergenic regions
+Repeat_region_CatSize: 1  #Number of parallel simulation for Repeat Regions
 
 #Horizontal gene transfer (HGT) size
-HGTRate: 10
-NodeLen: 5
-GeneDB: /home/masih/BacterialSimulator/Pipeline/inputs/uniprot-Bacteria.fasta
+HGTRate: 10 #Number of horizontal gene transfer from outside population
+NodeLen: 5 #Minimun length of the node to which horizontal gene transfer from outside population occur
+GeneDB: Inputs/uniprot-Bacteria.fasta # The database of bacterial genes from which horizontally transfered genes are selected 
 
 #Phylogeny Parameters
 PhylogeneticTreeDIR: Phylogeny 
 
 #Simulation Parameters     
 simulations: simulations
-Params_input: /home/masih/BacterialSimulator/Pipeline/inputs/Params.txt
-snakemake: /home/masih/miniconda3/envs/Sim/bin/snakemake
-alfsim: /home/masih/BacterialSimulator/ALF_standalone/bin/alfsim
-dawg: /home/masih/BacterialSimulator/dawg-develop/my_build/bin/bin/dawg
-art_illumina: /home/masih/BacterialSimulator/art_src_MountRainier_Linux/bin/bin/art_illumina
-samtools: /home/masih/miniconda3/envs/Sim/bin/samtools
-bwa: /home/masih/miniconda3/envs/Sim/bin/bwa 
-picard: /home/masih/miniconda3/envs/Sim/bin/picard
-gatk: /home/masih/BacterialSimulator/gatk/gatk-4.0.3.0/gatk
-vcftools: /home/masih/BacterialSimulator/vcftools_0.1.13/bin/vcftools
-bcftools: /home/masih/BacterialSimulator/bcfTools/bcftools/bcftools
-plink: /home/masih/BacterialSimulator/plink1.9/plink
-gtca: /home/masih/BacterialSimulator/gcta_1.91.4beta/gcta64
-PythonDir: /home/masih/miniconda3/envs/Sim/bin/python
-bgzip: /cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/htslib/1.5/bin/bgzip
-tabix: /cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/htslib/1.5/bin/tabix
-java: /home/masih/miniconda3/envs/Sim/bin/java
-haploview: /home/masih/BacterialSimulator/HaploView/Haploview.jar
+
+#The Param file includign the evolutionary models and evolutionary parameter values for each DNA sequence category 
+Params_input: Inputs/Params.txt
+
+#Directory to the prerequisites 
+snakemake: bin/snakemake
+alfsim: bin/alfsim
+dawg: bin/dawg
+art_illumina: bin/art_illumina
+samtools: bin/samtools
+bwa: bin/bwa 
+picard: bin/picard
+gatk: gatk-4.0.3.0/gatk
+vcftools: bin/vcftools
+bcftools: bcftools/bcftools
+plink: plink1.9/plink
+gtca: gcta_1.91.4beta/gcta64
+PythonDir: bin/python
+bgzip: bin/bgzip
+tabix: bin/tabix
+java: bin/java
+haploview: HaploView/Haploview.jar
 
 
 #Phenotype simulation parameters
