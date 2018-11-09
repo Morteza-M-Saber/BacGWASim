@@ -9,8 +9,8 @@ from os import system
 import subprocess
 
 
-def BacGWASim(Setting,CoreNumber=1,DirectedAcyclicGraph=True,Rulegraph=False,quiet=False):
-    command='snakemake --snakefile %s --cores %s --latency-wait 120 --rerun-incomplete'%(Setting,CoreNumber)
+def BacGWASim(Snakefile,CoreNumber=1,DirectedAcyclicGraph=True,Rulegraph=False,quiet=False):
+    command='snakemake --snakefile %s --cores %s --latency-wait 120 --rerun-incomplete'%(Snakefile,CoreNumber)
     if DirectedAcyclicGraph:
         command+=' --dag | dot -Tpng > %s.png'%(Setting+'_DAG')
     if Rulegraph:
@@ -36,7 +36,7 @@ def BacGWASim(Setting,CoreNumber=1,DirectedAcyclicGraph=True,Rulegraph=False,qui
 from optparse import OptionParser
 import os,sys
 parser = OptionParser()
-parser.add_option('-S','--Setting', dest='Setting',help='Absolute path to the setting file [required]',type='str',default='')
+parser.add_option('-S','--Snakefile', dest='Snakefile',help='Absolute path to the setting file [required]',type='str',default='')
 parser.add_option('-J','--CoreNumber', dest='CoreNumber',help= 'Use at most N cores in parallel (default: 1)',type='int',default=1)
 parser.add_option('-D',action="store_true", dest='DirectedAcyclicGraph',help= 'Print the directed acyclic\
                         graph of jobs. (Default:False)',default=False)
@@ -44,7 +44,7 @@ parser.add_option('-R',action="store_true", dest='Rulegraph',help="Print the dep
 parser.add_option('-Q',action="store_true", dest='quiet',help= 'Do not output any progress or rule information (default: False)',default=False)
 
 (options,args)=parser.parse_args()
-Setting=options.Setting
+Snakefile=options.Snakefile
 CoreNumber=options.CoreNumber
 DirectedAcyclicGraph=options.DirectedAcyclicGraph
 Rulegraph=options.Rulegraph
@@ -54,7 +54,7 @@ if DirectedAcyclicGraph==True  and Rulegraph==True:
 	print ("\nSimulatorPipe For Simulating Bacterail Whole Genomes \nOnly one of 'DirectedAcyclicGraph' and 'Rulegraph' can be used\n")
 	parser.print_help()
 	sys.exit(1)
-if (Setting=='') :
+if (Snakefile=='') :
 	print ('\nSimulatorPipe For Simulating Bacterail Whole Genomes \nRequired filed(s) not supplied\n')
 	parser.print_help()
 	sys.exit(1)
@@ -65,5 +65,5 @@ for one in input_option_dict:
 	print (one,input_option_dict[one])
 print ('')
 
-BacGWASim(Setting,CoreNumber,DirectedAcyclicGraph,Rulegraph,quiet)
+BacGWASim(Snakefile,CoreNumber,DirectedAcyclicGraph,Rulegraph,quiet)
 
