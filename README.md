@@ -46,12 +46,12 @@ cd path/to/workdir
 ```
 2) edit config file to include the path to prerequisites and workflow as needed
 ```
-vim config.yaml
+vim ConfigFile.yaml
 ```
 
 3) execute workflow, deploy software dependencies via conda
 ```
-snakemake -n --use-conda
+python BacGWASim.py -S Snakefile -J 4
 ```
 # Usage
 BacGWASim accepts a bacterial genome in fasta format and its annotation in GFF format. The phylogenetic tree can be user-defined or simulated by BacGWASim using a birth-death model.     
