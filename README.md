@@ -40,7 +40,7 @@ BacGWASim is build based on Snakemake and can be installed as following:
 1)  clone workflow into working directory   
 ```    
 
-git clone https://bitbucket.org/user/myworkflow.git path/to/workdir
+git clone https://github.com/Morteza-M-Saber/BacGWASim.git path/to/workdir
 cd path/to/workdir 
 
 ```
