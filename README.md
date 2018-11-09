@@ -44,14 +44,14 @@ git clone https://github.com/Morteza-M-Saber/BacGWASim.git path/to/workdir
 cd path/to/workdir 
 
 ```
-2) edit config file to include the path to prerequisites and workflow as needed
+2) edit config file to include the path to prerequisites and other parameters as needed
 ```
 vim ConfigFile.yaml
 ```
 
 3) execute workflow, deploy software dependencies via conda
 ```
-python BacGWASim.py -S Snakefile -J 4
+python BacGWASim.py -S Snakefile -J 4 --use-conda
 ```
 # Usage
 BacGWASim accepts a bacterial genome in fasta format and its annotation in GFF format. The phylogenetic tree can be user-defined or simulated by BacGWASim using a birth-death model.     
