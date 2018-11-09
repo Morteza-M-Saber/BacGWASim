@@ -1,14 +1,34 @@
 #User-specified Info
-user_input: inputs/user_input.txt #Path to parameter file
-GFF_file: GCF_000007045.1_ASM704v1_genomic.gff #Path to genome annotation
-fasta_file: /GCF_000007045.1_ASM704v1_genomic.fna #Path to genome sequence in fasta format
-
+GFF_file: Inputs/GCF_000007045.1_ASM704v1_genomic.gff #Path to genome annotation
+fasta_file: Inputs/GCF_000007045.1_ASM704v1_genomic.fna #Path to genome sequence in fasta format
 outputDIR: Output/simulationDir #Path to the output directory
 fasta_output: Streptococcus_pneumonia_r6 #Species Name
-ShellCallFile: Params/ShellCallFile #Path to ShellCallFile to writ the commands run for each job
+
+#Directory to the prerequisites 
+snakemake: bin/snakemake
+alfsim: bin/alfsim
+dawg: bin/dawg
+art_illumina: bin/art_illumina
+samtools: bin/samtools
+bwa: bin/bwa 
+picard: bin/picard
+gatk: gatk-4.0.3.0/gatk
+vcftools: bin/vcftools
+bcftools: bcftools/bcftools
+plink: plink1.9/plink
+gtca: gcta_1.91.4beta/gcta64
+PythonDir: bin/python
+bgzip: bin/bgzip
+tabix: bin/tabix
+java: bin/java
+haploview: HaploView/Haploview.jar
+
+
+ShellCallFile: ShellCallFile #Path to ShellCallFile to writ the commands run for each job
 ModuleDir: Modules #Path to Modules directory
 
 #Sequence input parameters
+user_input: Inputs/user_input.txt #Path to parameter file
 seq_types: Protein_coding_gene,Intergenic_region,RNA_gene,Repeat_region
 SequenceDIR: Sequences
 platform: illumina 
@@ -32,24 +52,7 @@ simulations: simulations
 #The Param file includign the evolutionary models and evolutionary parameter values for each DNA sequence category 
 Params_input: Inputs/Params.txt
 
-#Directory to the prerequisites 
-snakemake: bin/snakemake
-alfsim: bin/alfsim
-dawg: bin/dawg
-art_illumina: bin/art_illumina
-samtools: bin/samtools
-bwa: bin/bwa 
-picard: bin/picard
-gatk: gatk-4.0.3.0/gatk
-vcftools: bin/vcftools
-bcftools: bcftools/bcftools
-plink: plink1.9/plink
-gtca: gcta_1.91.4beta/gcta64
-PythonDir: bin/python
-bgzip: bin/bgzip
-tabix: bin/tabix
-java: bin/java
-haploview: HaploView/Haploview.jar
+
 
 
 #Phenotype simulation parameters
