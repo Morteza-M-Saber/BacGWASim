@@ -5,21 +5,19 @@ Created on Mon Feb 12 17:55:45 2018
 @author: Morteza.M Saber
 
 """
-from os import system
 import subprocess
-
 
 def BacGWASim(Snakefile,CoreNumber=1,DirectedAcyclicGraph=True,Rulegraph=False,quiet=False):
     command='snakemake --snakefile %s --cores %s --latency-wait 120 --rerun-incomplete'%(Snakefile,CoreNumber)
     if DirectedAcyclicGraph:
-        command+=' --dag | dot -Tpng > %s.png'%(Setting+'_DAG')
+        command+=' --dag | dot -Tpng > %s.png'%(Snakefile+'_DAG')
     if Rulegraph:
-        command+=' --rulegraph| dot -Tpng > %s.png'%(Setting+'_RuleGraph')
+        command+=' --rulegraph| dot -Tpng > %s.png'%(Snakefile+'_RuleGraph')
     if quiet:
         command+=' --quiet'
-    SettingPhylogeny=Setting+'Phylogeny'
+    SettingPhylogeny=Snakefile+'Phylogeny'
     CommandPhylogeny='snakemake --snakefile %s --cores %s '%(SettingPhylogeny,CoreNumber)
-    unlocker='snakemake --snakefile %s --unlock'%Setting
+    unlocker='snakemake --snakefile %s --unlock'%Snakefile
     import timeit
     start = timeit.default_timer()
     subprocess.call(CommandPhylogeny,shell=True)
