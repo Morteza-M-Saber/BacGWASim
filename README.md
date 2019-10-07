@@ -101,6 +101,6 @@ With implemented evolutionary models and parameters for simulation of phylogenet
 
 Genome-wide Linkage disequilibrium is one of the main features of bacterial population due to their clonal expansion. However, the genome-wide LD can be disrupted by homologous recombination which occur in bacteria in various degrees depending on the species. LD plots show that BacGWASim correctly captures the genome-wide LD while no recombination is simulated with decreasing LD levels in proportion with rate of homologous recombination simulated
 
-![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/LD.png)
+![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/LDRangeComparison.png)
 
 The distribution of linkage, measured as r2 scores binned into three categories, is shown as a function of distance in the genome, in units of kilobase pairs, within genomes of simulated (left panels) and real (right panels) bacteria.
