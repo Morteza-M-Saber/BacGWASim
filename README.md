@@ -1,4 +1,4 @@
-# A simulator for Bacterial Genome-wide Association studies (BacGWASim)
+# A simulator for Bacterial Genome-wide Association studies (BacGWASim v1.0)
 # Motivation
 Identification of genomic elements underlying bacterial phenotypes such as resistance to antibiotics, virulence and fermentation is a fundamental step for a better understanding of the molecular mechanisms of these traits, and may be able to inform new clinical, industrial and agricultural interventions. So far several methods for Bacterial Genome-wide association study (GWAS) have been devised to tackle this challenge, however, due to unique characteristics of bacterial genome, each of the methods have been shown to have certain limitations. 
 
