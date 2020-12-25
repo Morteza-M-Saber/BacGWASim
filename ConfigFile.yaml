@@ -1,65 +1,37 @@
-#User-specified Info
-GFF_file: Inputs/GCF_000007045.1_ASM704v1_genomic.gff #Path to genome annotation
-fasta_file: Inputs/GCF_000007045.1_ASM704v1_genomic.fna #Path to genome sequence in fasta format
-outputDIR: Output/simulationDir #Path to the output directory
-fasta_output: Streptococcus_pneumonia_r6 #Species Name
+#Define the following pathes 
+#output directory name
+outputDIR: BACGWASIM_1000_m0.01_r0.05
+cpus: 32
 
-#Directory to the prerequisites 
-snakemake: bin/snakemake
-alfsim: bin/alfsim
-dawg: bin/dawg
-art_illumina: bin/art_illumina
-samtools: bin/samtools
-bwa: bin/bwa 
-picard: bin/picard
-gatk: gatk-4.0.3.0/gatk
-vcftools: bin/vcftools
-bcftools: bcftools/bcftools
-plink: plink1.9/plink
-gtca: gcta_1.91.4beta/gcta64
-PythonDir: bin/python
-bgzip: bin/bgzip
-tabix: bin/tabix
-java: bin/java
-haploview: HaploView/Haploview.jar
+#number of species to be simulated
+num_species: 1000
+genome_length: 2000000
 
 
-ShellCallFile: ShellCallFile #Path to ShellCallFile to writ the commands run for each job
-ModuleDir: Modules #Path to Modules directory
+#input parameters
+#simbac
+mutation_rate: 0.01
+r_i: 0.05
+r_e: 0.00
+random_seed: 1487
 
-#Sequence input parameters
-user_input: Inputs/user_input.txt #Path to parameter file
-seq_types: Protein_coding_gene,Intergenic_region,RNA_gene,Repeat_region
-SequenceDIR: Sequences
-platform: illumina 
-#How many cateogries to be used for each Sequence types, this equal to maximum number of parallel simulation for each category
-Protein_coding_gene_CatSize: 15 #Number of parallel simulation for protein coding genes
-RNA_gene_CatSize: 1  #Number of parallel simulation for RNA genes
-Intergenic_region_CatSize: 10  #Number of parallel simulation for Intergenic regions
-Repeat_region_CatSize: 1  #Number of parallel simulation for Repeat Regions
-
-#Horizontal gene transfer (HGT) size
-HGTRate: 10 #Number of horizontal gene transfer from outside population
-NodeLen: 5 #Minimun length of the node to which horizontal gene transfer from outside population occur
-GeneDB: Inputs/uniprot-Bacteria.fasta # The database of bacterial genes from which horizontally transfered genes are selected 
-
-#Phylogeny Parameters
-PhylogeneticTreeDIR: Phylogeny 
-
-#Simulation Parameters     
-simulations: simulations
-
-#The Param file includign the evolutionary models and evolutionary parameter values for each DNA sequence category 
-Params_input: Inputs/Params.txt
-
-
-
+#Dependecies
+simbac_path: dependencies/sim/SimBac/SimBac
+haploview: dependencies/ld/Haploview.jar
 
 #Phenotype simulation parameters
-effect_size_ODR: 2,3,5,7,8,10,15,20,50,100
-causal_variant_Num: 10,20,50,100
-GWASHeritability: 1
-GWASDiseasePrevalence: 0.5
-GWASPhenSimRep: 1
-GWASCase: 1500
-GWASControl: 1500
+phenType: cc   #'cc':binary case-control, 'quant': quantitative
+causalMAF: 0.2
+causalMaxLD: 0.6  #Maximum permitted r2 score between pairs of causal markers in window size of 1000 markers
+effect_size_ODR: 2,3,4,7,10,11,15,20 
+causal_variant_Num: 16
+phenReplication: 10
+heritability: 1
+diseasePrevalence: 0.5
+#in case of case-control binary phenotype simulation
+case: 500
+control: 500
+
+#Linkage Disequilibrium plotting
+snplimit: 3000 #Number of SNPs randomly selected for plotting linkage map
+ldmaf: 0.2

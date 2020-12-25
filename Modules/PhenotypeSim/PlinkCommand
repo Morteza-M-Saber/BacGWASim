@@ -1,8 +1,0 @@
-plink 1.9 to generate plink binary PED files accepted by GCTA phenotype simulator:
-/home/masih/Baterial_simulator/Plink1.9/plink --file plinkFileTest --make-bed --allow-extra-chr --maf 0.01 --out PlinkBinaries
-/home/masih/BacterialSimulator/plink1.9/plink --vcf /scratch/masih/output500/simulations/0/VarCall/CombinedVCF --maf 0.1 --allow-extra-chr --recode --out myplink
-# To generate rate of missingness
-plink --bfile data --missing
-
-#Generate files to be used by haploview
-/home/masih/BacterialSimulator/plink1.9/plink --file /scratch/masih/output500/simulations/0/VarCall/haploview --recode --allele1234 --snps-only no-DI --allow-extra-chr --maf 0.2 --out PlinkHaploview

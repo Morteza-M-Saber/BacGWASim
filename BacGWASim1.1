@@ -1,0 +1,24 @@
+
+configfile: "configfile.yaml"
+from time import strftime, localtime
+import os
+
+rule all:
+     input:
+             #expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]), simulate phylogeny
+             expand("{outputDIR}/simulations/phenoSim/{replication_index}/gtca.par",outputDIR=config["outputDIR"],replication_index=range(config['phenReplication'])),
+             expand("{outputDIR}/simulations/ld/haploview.LD.PNG",outputDIR=config["outputDIR"]),
+
+
+#step1) genome simulator
+include: os.path.join('modules','simbac','simbac.snake')
+#step2) variant caller
+include: os.path.join('modules','snippy','simbac2snippy.snake')
+include: os.path.join('modules','snippy','snippy.snake')
+include: os.path.join('modules','snippy','snippy2sim.snake')
+#step3) phenotype simulator
+include: os.path.join('modules','phenotype','phenpermutor.snake')
+include: os.path.join('modules','phenotype','gtca.snake')
+#step 4) LD visualization
+include: os.path.join('modules','ld','ldplotter.snake')
+

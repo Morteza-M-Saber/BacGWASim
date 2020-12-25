@@ -1,0 +1,44 @@
+#writing the snakemake file to simulate the tree
+# -*- coding: utf-8 -*-
+"""
+Created on Fri june 11
+
+@author: Masih
+?? ?? ?????? ????? ?????, ???? ??? ?? ????? ???
+
+Simulate phylogentic tree
+
+"""
+
+# Used for system calls.
+from subprocess import call
+
+# Used for timestamping the log files.
+from time import localtime, strftime
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------
+# SNAKEMAKE RULE #
+import os
+
+    
+rule treesim:
+    input: 
+        num_species=config["num_species"],
+        birth_rate=config["birth_rate"]),
+        death_rate=config["death_rate"]),
+        birth_rate_sd=config["birth_rate_sd"]),
+        death_rate_sd=config["death_rate_sd"]),
+
+    output: 
+        phylogeny=expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]),
+    params:
+        logNAME="Simulating phylogenetic tree." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
+        python=config['python'],
+        treesim=os.path.join('modules','treesim','treesim.py'),
+        shellCallFile=os.path.join(config["outputDIR"],'BacGWASim.log'),
+    run:  
+        callString='python3 %s --num_species %s --output %s --birth_rate %s --death_rate %s \
+                    --birth_rate_sd %s --death_rate_sd %s' % (params.treesim,input.num_species,output.output,
+                                                              input.birth_rate,input.death_rate,input.birth_rate_sd,input.death_rate_sd)
+        call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
+        call(callString, shell=True)
