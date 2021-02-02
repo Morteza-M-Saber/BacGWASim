@@ -1,91 +1,125 @@
-# A simulator for Bacterial Genome-wide Association studies (BacGWASim v1.0)
-# Motivation
-Identification of genomic elements underlying bacterial phenotypes such as resistance to antibiotics, virulence and fermentation is a fundamental step for a better understanding of the molecular mechanisms of these traits, and may be able to inform new clinical, industrial and agricultural interventions. So far several methods for Bacterial Genome-wide association study (GWAS) have been devised to tackle this challenge, however, due to unique characteristics of bacterial genome, each of the methods have been shown to have certain limitations. 
+#BacGWASim1.2
+A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v1.2)
 
-BacGWASim is designed to simulate whole-genomes and phenotypes of large bacterial populations focusing on unique characteristics of bacteria such as strong genome-wide linkage disequilibrium and homoplasy events under a range of realistc evolutionary regimens, which affects the power of bacterial GWAS tools. The data produced by BacGWASim provides a mean to 1) evaluate the power and limitations of existing bacterial GWAS methods, 2) develop and benchmark novel tools for bacterial GWAS.
+----------
 
-# Outline
-BacGWASim is able to simulate whole-genomes of large bacterial populations along with the corresponding phenotypes based on the emergence and evolution of causal variants within the population. In the first step, using a forward-in-time birth-death model a phylogenetic tree is generated which is tunable in aspects of birth rate (λ), death rate(µ), population size and root-leaf distance. The resulting phylogenetic tree accurately simulates clonal expansion of bacterial populations. In the second step, BacGWASim accepts a bacterial genome and the corresponding genome annotations and divides the genome into four categories of DNA elements, namely, protein coding genes, intergenic regions, RNA genes and pseudogenes/repetitive sequences that may have variation in influence of evolutionary forces on them. The simulation of evolutionary events is performed independently for each DNA category at three levels: 1) Site level events such as codon-substitution model, nucleotide-substitution model, insertion/deletion events and rate heterogeneity across sites, 2) Gene level events such as gene duplication, gene loss and gene translocation and 3) Genome level events such as recombination, lateral gene transfer (HGT) and genome rearrangements. Evolutionary rates and parameters are tunable for each process and for each category of DNA elements. After simulation of genome sequences, in the final step, a set of causal variants are chosen based on the minor allele frequency (MAF) upon which phenotype of each simulated individual is then simulated using genetic additive model. The phenotype simulation can be tuned by a number of parameters which are relevant to bacterial phenotypes including 1) the number of causal variants, 2) Effect size range of causal variants, 3) Quantitative or binary phenotype, 4) Prevalence of the affected phenotype and 5) phenotype heritability. 
-  
-BacGWASim is written to be able to simulate various evolutionary scenarios by permuting over all possible combination of user-defined evolutionary parameters.  For this end, BacGWASim is written to maximize modularity and parallelizability so that the simulation of large number of genomes and their evolutionary events could be performed in reasonable amount of time provided enough computational resources. 
+Motivation
+----------
+Identification of genomic elements underlying bacterial phenotypes such as resistance to antibiotics, virulence and fermentation is a fundamental step for a better understanding of the molecular mechanisms of these traits, and may be able to inform new clinical, industrial and agricultural interventions.
 
-# Prerequisites
+BacGWASim is designed to simulate whole-genomes and phenotypes of large bacterial populations focusing on unique characteristics of bacteria such as strong genome-wide linkage disequilibrium and population stratification. The data produced by BacGWASim provides a mean to 1) evaluate the power and limitations of existing bacterial Machine learning and Genome-Wide assoctation study methods and 2) develop and benchmark novel tools for bacterial genotype to phenotype mapping tools.
 
+Citations
+--------
+
+Original BacGWASim implementation paper: `Saber, Morteza M., Shapiro, B Jesse` [Benchmarking bacterial genome-wide association study methods using simulated genomes and phenotypes.](https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000337#tab2) `Microbial Genomics https://doi.org/10.1099/mgen.0.000337`
+
+Prerequisites
+-------------
 
 Between parenthesis the versions the script was tested against:
 
-**python3+** (3.6.6)    
-**Snakemake** (5.3.0)     
-**ALFsim** (1.0.0)    
-**DAWG** (2.0.0)    
-**numpy** (1.15.2)    
-**scipy** (1.1.0)   
-**pandas** (0.23.4)   
-**ART** (2016.06.05)    
-**Samtools** (1.9.0)    
-**BWA** (0.7.17)    
-**GATK** (3.8.0)    
-**Plink** (1.9)   
-**gcta** (1.26.0)
+* `python` 3+ (3.6.12)
+* `numpy` (1.15.2)
+* `scipy` (1.1.0)
+* `pandas` (1.1.5)
+* `ete3` (3.1.2)
+* `pyvcf` (0.6.8)
+* `snakemake`(5.31.1)
+* `bcftools` (1.10.2)
+* `plink` (1.9)
+* `GCTA` (1.93.2)
+* `snp-sites` (2.5.1)
+* `openjdk` (8.0.152)
+* `Haploview` (4.2)
+* `simbac` (commit `5015897`)
 
-If visualization parameter is set to True:
 
-**Matplotlib** (3.0.1)     
-**ete3** (3.1.1)
-
-# Installation
+Installation
+------------
 
 BacGWASim is build based on Snakemake and can be installed as following:
 
 1)  clone workflow into working directory   
 ```    
-
-git clone https://github.com/Morteza-M-Saber/BacGWASim.git path/to/workdir
-cd path/to/workdir 
-
+git clone https://github.com/Morteza-M-Saber/BacGWASim.
+cd BacGWASim 
 ```
+2) Install dependencies:
+The easiest way to install BacGWASim dependencies is through `conda`. **It is recommended to install dependencies inside an isolated environment to avoid package conflicts**:
+```    
+conda create -n BacGWASim
+conda activate BacGWASim
+conda install -c anaconda python=3.6.12
+conda install -c anaconda pandas=1.1.5
+conda install -c bioconda pyvcf=0.6.8
+conda install -c anaconda scipy=1.5.2
+conda install -c anaconda numpy=1.19.2
+conda install -c bioconda snakemake=5.31.1
+conda install -c bioconda snp-sites=2.5.1
+conda install -c bioconda bcftools=1.10.2
+conda install -c bioconda plink=1.90b6.18
+conda install -c anaconda openjdk=8.0.152
+```
+Two dependency packages of  [GCTA (1.93.2)](https://cnsgenomics.com/software/gcta/#Download) and [simbac (commit 5015897)](https://github.com/tbrown91/SimBac) which are not available in conda channels should be installed manually and path to their executables need to be defined in `configfile.yaml`
+
+
 2) edit config file to include the path to prerequisites and other parameters as needed
 ```
-vim ConfigFile.yaml
+vim configfile.yaml
 ```
 
-3) execute workflow, deploy software dependencies via conda
+3) execute workflow, determine number of available cpu cores for parallelization
 ```
-python BacGWASim.py -S Snakefile -J 4 --use-conda
+snakemake --snakefile BacGWASim1.2 --cores 5 --latency-wait 300
 ```
-# Usage
-BacGWASim accepts a bacterial genome in fasta format and its annotation in GFF format. The phylogenetic tree can be user-defined or simulated by BacGWASim using a birth-death model.     
-The program outputs the simulated genotypes and phenotypes for each species of the phylogenetic tree.
+Simulation parameters
+------------
+All the simulation parameters are included in `configfile.yaml` file and can be adjusted:
 
-To get the parameter information of the tool:
 ```
-python BacGWASim.py -h
+#output directory name
+outputDIR: BACGWASIM_quant_s100_m0.05_r0.01
+
+
+#BacGWASim dependencies not provided by conda channels
+simbac_path: dependencies/sim/SimBac/SimBac
+haploview: dependencies/ld/Haploview.jar
+gcta: dependencies/gcta/gcta_1.93.2beta/gcta64
+
+
+#Genome simulation parameters
+num_species: 100                 #Number of samples in the simulated population
+genome_length: 10000             #Length of the genome (.bp)
+mutation_rate: 0.05              #Mutation rate
+r_i: 0.01    #Recombination rate
+random_seed: 1487                #Random seed for reproducibility of results
+maf: 0.01                        #Minor allele frequency threshold of rare alleles to be discarded
+
+#Phenotype simulation parameters
+phenType: quant                  #Type of simulated phenotype,'cc':binary case-control, 'quant': quantitative
+causalMAF: 0.1                   #Minimum MinorAlleleFrequency of causal markers
+causalMaxMAF: 0.4                #Maximum MinorAlleleFrequency of causal markers
+causalMaxLD: 0.6                 #Maximum permitted r2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting causalMAF and causalMaxMaf thresholds
+causal_variant_Num: 16           #Number of causal markers
+effect_size_ODR: 2,3,4,7,10,11,15,20    #Effect sizes of causal markers (.odds ratios) (comma separated,Must be a multiple of causal_variant_Num)
+phenReplication: 10              #Number of phenotype replication sets
+heritability: 1    #Heritability of phenotype
+diseasePrevalence: 0.5           #Prevalence of phenotype
+#in case of case-control binary phenotype simulation, number of case and control samples must be defined by 'case' and 'control' parameters
+case: 50
+control: 50
+
+#Linkage Disequilibrium plotting
+snplimit: 3000                   #Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size
+heapSize: 1000                   #java heap_size for ld plot visualization (.mb)
+ldmaf: 0.1                       #Minimum MinorAlleleFrequency of markers for LD plotting (Lower this values, it is more difficult to estiamte accurate r2 values between pairs of markers leading to more noisy plot)
 ```
-Output:
-```
-Usage: BacGWASim.py [options]
 
-Options:
-  -h, --help            show this help message and exit   
 
-  -S SETTING, --Setting=SETTING
-                        Absolute path to the setting file [required]    
-
-  -J CORENUMBER, --CoreNumber=CORENUMBER
-                        Use at most N cores in parallel (default: 1)    
-
-  -D                    Print the directed acyclic
-                        graph of jobs. (Default:False)    
-
-  -R                    Print the dependency graph of rules.
-                        *Caution*Rulegraph can not be set to True if
-                        DirectedAcyclicGraph is set to True (default: False)    
-
-  -Q                    Do not output any progress or rule information
-                        (default: False)
-```
-# Examples
-If visualization is set to True, BacGWASim graphs the simulated genotype-phenotypes as color-coded phylogenetic tree and causal variants presence-absence as heat-map.
+Examples
+------------
+BacGWASim graphs the simulated genotype-phenotypes as color-coded phylogenetic tree and causal variants presence-absence as heat-map.
 
 1. Simulation of a population of size 40 with 50 segregating sites as causal variants. 
 ![alt text](https://github.com/Morteza-M-Saber/BacGWASim/blob/master/Img/mytree40_50.png)

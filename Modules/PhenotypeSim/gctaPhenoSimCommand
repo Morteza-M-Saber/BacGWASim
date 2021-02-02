@@ -1,3 +1,0 @@
-#GCTA only accept chromosome names in the form of regular 1-22 human chromosome names. The input files must be formated properly
-#Run phenotype simulation using GCTA:
-/home/masih/Baterial_simulator/gcta_1.91.4beta/gcta64 --bfile PlinkFormat --simu-causal-loci  /home/masih/Baterial_simulator/Pipeline/outputs/simulations/2/PhenotypeSim/causal.snplist   --simu-rep 5   --out /home/masih/Baterial_simulator/Pipeline/outputs/simulations/2/PhenotypeSim/test --simu-qt
