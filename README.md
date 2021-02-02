@@ -116,7 +116,7 @@ control: 50
 #Linkage Disequilibrium plotting
 snplimit: 3000                   #Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size
 heapSize: 1000                   #java heap_size for ld plot visualization (.mb)
-ldmaf: 0.1                       #Minimum MinorAlleleFrequency of markers for LD plotting (Lower this values, it is more difficult to estiamte accurate r2 values between pairs of markers leading to more noisy plot)
+ldmaf: 0.1                       #Minimum MinorAlleleFrequency of markers for LD plotting (By reducing value, it gets harder to accurately estiamte statistical r2 values between pairs of markers leading to more noisy plot)
 ```
 Outputs
 ------------
