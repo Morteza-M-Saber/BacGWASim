@@ -126,6 +126,7 @@ genSim/
   sims.pickle            #Multi-sample variant call file excluding rare alleles in pandas pickle format (for machine learning analysis)
   sims_no_selection.vcf  #Multi-sample variant call file including rare alleles
   genSim.fasta           #Multiple-sequence alignment of simulated genomes in fasta format
+  phylogeny.nwk         #phylogenetic tree of the simulated population in newick format
 
 phenSim/
   phenSim.phen           #simulated phenotypes
@@ -141,7 +142,7 @@ ld/
 
 Usage for Machine-learning models
 ------------
-BacGWASim outputs the simulated genotype matrix and phenotypes in pickle format that could be used be machine-learning models as below:
+BacGWASim outputs the simulated genotype matrix and phenotypes in pickle format that could be used to train machine-learning models as below:
 
 ```
 import pandas as pd
