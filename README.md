@@ -71,8 +71,10 @@ vim configfile.yaml
 
 3) execute workflow, determine number of available cpu cores for parallelization
 ```
-snakemake --snakefile BacGWASim1.2 --cores 5 --latency-wait 300
+snakemake --snakefile BacGWASim1.2 --cores 5 --latency-wait 60
 ```
+In case the filesystem suffer from latency, consider increasing the `latency-wait` accordingly.
+
 Simulation parameters
 ------------
 All the simulation parameters are included in `configfile.yaml` file and can be adjusted:
