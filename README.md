@@ -60,6 +60,7 @@ conda install -c bioconda snp-sites=2.5.1
 conda install -c bioconda bcftools=1.10.2
 conda install -c bioconda plink=1.90b6.18
 conda install -c anaconda openjdk=8.0.152
+conda install -c anaconda ete3=3.1.2
 ```
 Two dependency packages of  [GCTA (1.93.2)](https://cnsgenomics.com/software/gcta/#Download) and [simbac (commit 5015897)](https://github.com/tbrown91/SimBac) which are not available in conda channels should be installed manually and path to their executables need to be defined in `configfile.yaml`
 
