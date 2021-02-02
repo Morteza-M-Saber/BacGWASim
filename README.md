@@ -117,7 +117,42 @@ snplimit: 3000                   #Number of SNPs randomly selected for plotting 
 heapSize: 1000                   #java heap_size for ld plot visualization (.mb)
 ldmaf: 0.1                       #Minimum MinorAlleleFrequency of markers for LD plotting (Lower this values, it is more difficult to estiamte accurate r2 values between pairs of markers leading to more noisy plot)
 ```
+Outputs
+------------
+BacGWASim produces the following outputs:
+```
+genSim/
+  sims.vcf    #Multi-sample variant call file excluding rare alleles in vcf format (used for phenotype simulation)
+  sims.pickle #Multi-sample variant call file excluding rare alleles in pandas pickle format (for machine learning analysis)
+  sims_no_selection.vcf #Multi-sample variant call file including rare alleles
+  genSim.fasta #Multiple-sequence alignment of simulated genomes in fasta format
 
+phenSim/
+  phenSim.phen #simulated phenotypes
+  phenSim.par  #ID, MAF and effect size of causal variants
+  phenSim.pickle #simulated phenotpes in pandas pickle format
+  simVis.png     #Distribution of phenotypes and casual variants in the population
+
+ld/
+  ldPlot.png #Genome-wide linkage disequilibrium (LD) plot
+  ldPlot.LD  #Estimated pairwise r2 scores between sites used for plotting genome-wide LD plot
+
+```
+
+Usage for Machine-learning models
+------------
+BacGWASim outputs the simulated genotype matrix and phenotypes in pickle format that could be used be machine-learning models as below:
+
+```
+import pandas as pd
+X=pd.read_pickle(sims.pickle)
+Y=pd.read_pickle(phenSim.pickle)
+
+```
+
+Usage for GWAS tools
+------------
+BacGWASim also outputs the simulated genotype in vcf format and phenotypes in gcta-compliant format that could be used by various GWAS tools.
 
 Examples
 ------------
