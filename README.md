@@ -62,7 +62,7 @@ vim configfile.yaml
 
 3) execute workflow, determine number of available cpu cores for parallelization
 ```
-snakemake --snakefile BacGWASim1.2 --cores 5 --latency-wait 60
+snakemake --snakefile Snakefile --cores 5 --latency-wait 60
 ```
 In case the filesystem suffer from latency, consider increasing the `latency-wait` accordingly.
 
