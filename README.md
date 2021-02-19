@@ -46,22 +46,12 @@ git clone https://github.com/Morteza-M-Saber/BacGWASim.
 cd BacGWASim 
 ```
 2) Install dependencies:
-The easiest way to install BacGWASim dependencies is through `conda`. **It is recommended to install dependencies inside an isolated environment to avoid package conflicts**:
-```    
-conda create -n BacGWASim
-conda activate BacGWASim
-conda install -c anaconda python=3.6.12
-conda install -c anaconda pandas=1.1.5
-conda install -c bioconda pyvcf=0.6.8
-conda install -c anaconda scipy=1.5.2
-conda install -c anaconda numpy=1.19.2
-conda install -c bioconda snakemake=5.31.1
-conda install -c bioconda snp-sites=2.5.1
-conda install -c bioconda bcftools=1.10.2
-conda install -c bioconda plink=1.90b6.18
-conda install -c anaconda openjdk=8.0.152
-conda install -c anaconda ete3=3.1.2
+The easiest way to install BacGWASim dependencies is through [`mamba`](https://github.com/mamba-org/mamba) (a modern alternative to `conda`). **It is recommended to install dependencies inside an isolated environment to avoid package conflicts**:
+
+```bash
+mamba env create --file requirements.yaml
 ```
+
 Two dependency packages of  [GCTA (1.93.2)](https://cnsgenomics.com/software/gcta/#Download) and [simbac (commit 5015897)](https://github.com/tbrown91/SimBac) which are not available in conda channels should be installed manually and path to their executables need to be defined in `configfile.yaml`
 
 
