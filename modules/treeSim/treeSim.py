@@ -1,8 +1,6 @@
 ###in case of using tools needing a phylogenetic tree, we need a tree simulatro
 #This can be done using birht-death model in dendropy which is available in conda as well
 
-import snakemake
-
 
 def get_options():
     import argparse
@@ -42,10 +40,6 @@ def treeSim (num_species,output,birth_rate=1.0,death_rate=0.5,birth_rate_sd=0.1,
     t = treesim.birth_death_tree(birth_rate=float(birth_rate), death_rate=float(death_rate), num_extant_tips=int(num_species),
                                  birth_rate_sd=float(birth_rate_sd),death_rate_sd=float(death_rate_sd))
     t.write(path=output,schema='newick')
-
-    print('inside treeSim')
-    print(snakemake.config)
-    print(dict(snakemake.config))
 
 treeSim (options.num_species,options.output,options.birth_rate,
          options.death_rate,options.birth_rate_sd,options.death_rate_sd)
