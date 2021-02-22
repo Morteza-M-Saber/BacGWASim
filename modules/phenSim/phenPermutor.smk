@@ -14,9 +14,9 @@ def indexerRep(wildcards):
 
 rule phenPermutor:
     input:
-        causalPool=expand("{outputDIR}/simulations/genSim/causalPool.bim",outputDIR=config["outputDIR"]),
+        causalPool="{output_dir}/simulations/genSim/causalPool.bim",
     output:
-        causal=temp(expand("{outputDIR}/simulations/phenSim/{{replication_index}}/causalLoci.snplist",outputDIR=config["outputDIR"])),
+        causal=temp("{output_dir}/simulations/phenSim/{replication_index}/causalLoci.snplist"),
     params:
         iterationsPhen= config['causal_variant_Num'],
         shellCallFile=os.path.join(config["outputDIR"],'BacGWASim.log'),

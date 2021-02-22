@@ -9,13 +9,13 @@ from subprocess import call
 
 rule simViz:
     input:
-        vcf=expand("{outputDIR}/simulations/genSim/sims.vcf",outputDIR=config["outputDIR"]),
-        par=expand("{outputDIR}/simulations/phenSim/{{replication_index}}/phenSim.par",outputDIR=config["outputDIR"]),
-        phen=expand("{outputDIR}/simulations/phenSim/{{replication_index}}/phenSim.phen",outputDIR=config["outputDIR"]),
-        phylogeny=expand("{outputDIR}/simulations/genSim/genSim.nwk",outputDIR=config["outputDIR"]),
-        haploview=expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["outputDIR"]),
+        vcf="{output_dir}/simulations/genSim/sims.vcf",
+        par="{output_dir}/simulations/phenSim/{replication_index}/phenSim.par",
+        phen="{output_dir}/simulations/phenSim/{replication_index}/phenSim.phen",
+        phylogeny="{output_dir}/simulations/genSim/genSim.nwk",
+        haploview="{output_dir}/simulations/ld/ldPlot.LD.PNG",
     output:
-        simViz=expand("{outputDIR}/simulations/phenSim/{{replication_index}}/sim{{replication_index}}.png",outputDIR=config["outputDIR"]),
+        simViz="{output_dir}/simulations/phenSim/{replication_index}/sim{replication_index}.png",
     params:
         phenType=config['phenType'],
         simViz=os.path.join('modules','visualizers','simVis.py'),
@@ -33,16 +33,16 @@ rule simViz:
                         return phylo[:pos1]+','+new_id+':'+phylo[pos1+len(old_id)+2:]
                       else:
                         return phylo[:pos2]+'('+new_id+':'+phylo[pos2+len(old_id)+2:]
-        txt= open(input.phylogeny[0],'r') 
+        txt= open(input.phylogeny,'r') 
         phylo=txt.readline().strip()
         old,new='0','zero'
         phylo_corrected=phylo_tip_corrector(phylo,old,new)
-        path_=os.path.join(os.path.split(input.phylogeny[0])[0],'phylogeny.nwk')
+        path_=os.path.join(os.path.split(input.phylogeny)[0],'phylogeny.nwk')
         with open (path_,'w') as file:
           file.write(phylo_corrected)
         #run simViz on all simulations
         CallString='python %s --vcfIn %s --phen %s --phenType %s --par %s --phylo %s --out %s'%( \
-                    params.simViz,input.vcf[0],input.phen[0],params.phenType,input.par[0],path_,output.simViz[0])
+                    params.simViz,input.vcf,input.phen,params.phenType,input.par,path_,output.simViz)
         call('echo %s >> %s' %(CallString,params.shellCallFile),shell=True)
         call(CallString,shell=True)
  

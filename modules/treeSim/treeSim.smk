@@ -23,7 +23,7 @@ import os
     
 rule treeSim:
     output: 
-        phylogeny=expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]),
+        phylogeny="{output_dir}/phylogeny/phylogeny.nwk",
     params:
         num_species=config["num_species"],
         birth_rate=config["birth_rate"],
@@ -40,5 +40,4 @@ rule treeSim:
                                                               params.birth_rate,params.death_rate,params.birth_rate_sd,params.death_rate_sd)
         call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
         call(callString, shell=True)
-
 

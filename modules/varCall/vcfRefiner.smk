@@ -17,21 +17,21 @@ import numpy as np
    
 rule vcfRefiner:
     input: 
-        vcf=expand("{outputDIR}/simulations/genSim/core.vcf",outputDIR=config["outputDIR"]),
+        vcf="{output_dir}/simulations/genSim/core.vcf",
     output: 
-        vcf=expand("{outputDIR}/simulations/genSim/sims.vcf",outputDIR=config["outputDIR"]),
-        core_rehead=temp(expand("{outputDIR}/simulations/genSim/core_rehead.vcf",outputDIR=config["outputDIR"])),
-        causalvcf=temp(expand("{outputDIR}/simulations/genSim/simsCausal.vcf",outputDIR=config["outputDIR"])),
-        plink=temp(expand("{outputDIR}/simulations/genSim/sims.bim",outputDIR=config["outputDIR"])),
-        plinkbed=temp(expand("{outputDIR}/simulations/genSim/sims.bed",outputDIR=config["outputDIR"])),
-        plinkfam=temp(expand("{outputDIR}/simulations/genSim/sims.fam",outputDIR=config["outputDIR"])),
-        plinklog=temp(expand("{outputDIR}/simulations/genSim/sims.log",outputDIR=config["outputDIR"])),
-        plinknosex=temp(expand("{outputDIR}/simulations/genSim/sims.nosex",outputDIR=config["outputDIR"])),
-        causalPool=temp(expand("{outputDIR}/simulations/genSim/causalPool.bim",outputDIR=config["outputDIR"])),
-        causalPoolbed=temp(expand("{outputDIR}/simulations/genSim/causalPool.bed",outputDIR=config["outputDIR"])),
-        causalPoolfam=temp(expand("{outputDIR}/simulations/genSim/causalPool.fam",outputDIR=config["outputDIR"])),
-        causalPoollog=temp(expand("{outputDIR}/simulations/genSim/causalPool.log",outputDIR=config["outputDIR"])),
-        causalPoolnosex=temp(expand("{outputDIR}/simulations/genSim/causalPool.nosex",outputDIR=config["outputDIR"])),
+        vcf="{output_dir}/simulations/genSim/sims.vcf",
+        core_rehead=temp("{output_dir}/simulations/genSim/core_rehead.vcf"),
+        causalvcf=temp("{output_dir}/simulations/genSim/simsCausal.vcf"),
+        plink=temp("{output_dir}/simulations/genSim/sims.bim"),
+        plinkbed=temp("{output_dir}/simulations/genSim/sims.bed"),
+        plinkfam=temp("{output_dir}/simulations/genSim/sims.fam"),
+        plinklog=temp("{output_dir}/simulations/genSim/sims.log"),
+        plinknosex=temp("{output_dir}/simulations/genSim/sims.nosex"),
+        causalPool=temp("{output_dir}/simulations/genSim/causalPool.bim"),
+        causalPoolbed=temp("{output_dir}/simulations/genSim/causalPool.bed"),
+        causalPoolfam=temp("{output_dir}/simulations/genSim/causalPool.fam"),
+        causalPoollog=temp("{output_dir}/simulations/genSim/causalPool.log"),
+        causalPoolnosex=temp("{output_dir}/simulations/genSim/causalPool.nosex"),
     params:
         outDir=config['outputDIR'],
         causalMAF=config['causalMAF'],
@@ -44,7 +44,7 @@ rule vcfRefiner:
         rehead=os.path.join('modules','varCall','rehead'),
         shellCallFile=os.path.join(config["outputDIR"],'BacGWASim.log'),
     log: 
-        temp(expand("{outputDIR}/simulations/genSim/genSim.log",outputDIR=config["outputDIR"])),
+        temp("{output_dir}/simulations/genSim/genSim.log"),
     run:  
         #plink doesn't accept 0 as sample ID so we need to change it
         callString="bcftools reheader --samples %s %s -o %s" %(params.rehead, input.vcf,os.path.join(params.outDir,'simulations','genSim','core_rehead.vcf'))
@@ -68,13 +68,13 @@ rule vcfRefiner:
               info_lines.append(line)
               info_line_count+=1
               line=file.readline()
-          var_lines = open(output.vcf[0],'r').readlines()[info_line_count:]
+          var_lines = open(output.vcf,'r').readlines()[info_line_count:]
           if len(var_lines) - info_line_count <= params.varNumber:
             print('Number of simulated markers is less than requested!\nConsider increasing mutation rate!')
           else:
             rand_lines=np.random.choice(range(len(var_lines)),params.varNumber,replace=False)
             rand_indx=np.sort(rand_lines)
-            txt=open(output.vcf[0],'w')
+            txt=open(output.vcf,'w')
             for info_ in info_lines:
               txt.write(info_)
             for var_choice in rand_indx:
@@ -99,11 +99,11 @@ rule vcfRefiner:
         call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
         call(callString, shell=True)
         #Eliminate variants based on MAF for phenotype simulation (Plink1.9 --max-maf does have bug in it! use bcftools)
-        callString="bcftools view %s -q %s -Q %s -Ov -o %s" %(output.vcf,params.causalMAF,params.causalMaxMAF,output.vcf[0][:-4]+'Causal.vcf')
+        callString="bcftools view %s -q %s -Q %s -Ov -o %s" %(output.vcf,params.causalMAF, params.causalMaxMAF, output.vcf[:-4] + 'Causal.vcf')
         call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
         call(callString, shell=True)
         #Pruning SNP pairs in highLD for phenotype simulation
-        callString='bcftools +prune  -l %s -w 1000 %s -Ov -o %s' % (params.causalMaxLD,output.vcf[0][:-4]+'Causal.vcf',str(output.vcf)[:-4]+'_LDpruned.vcf')
+        callString='bcftools +prune  -l %s -w 1000 %s -Ov -o %s' % (params.causalMaxLD,output.vcf[:-4]+'Causal.vcf',str(output.vcf)[:-4]+'_LDpruned.vcf')
         call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
         call(callString, shell=True)
         #causalMarkerPool

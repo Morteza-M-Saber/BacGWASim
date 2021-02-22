@@ -11,17 +11,17 @@ from subprocess import call
 
 rule LDPlotter:
     input:
-        vcf=expand("{outputDIR}/simulations/genSim/sims.vcf",outputDIR=config["outputDIR"]),
+        vcf="{output_dir}/simulations/genSim/sims.vcf",
     output:
-        vcfmaf=temp(expand("{outputDIR}/simulations/ld/sims_maf.vcf",outputDIR=config["outputDIR"])),
-        subset=temp(expand("{outputDIR}/simulations/ld/sims_subset_x.vcf",outputDIR=config["outputDIR"])),
-        vcfmap=temp(expand("{outputDIR}/simulations/ld/sims.map",outputDIR=config["outputDIR"])),
-        vcfped=temp(expand("{outputDIR}/simulations/ld/sims.ped",outputDIR=config["outputDIR"])),
-        haploview_inmap=temp(expand("{outputDIR}/simulations/ld/haploview_in.map",outputDIR=config["outputDIR"])),
-        haploview_inped=temp(expand("{outputDIR}/simulations/ld/haploview_in.ped",outputDIR=config["outputDIR"])),
-        haploview=expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["outputDIR"]),
-        tmp1=temp(expand("{outputDIR}/simulations/ld/sims.nosex",outputDIR=config["outputDIR"])),
-        tmp2=temp(expand("{outputDIR}/simulations/ld/sims.log",outputDIR=config["outputDIR"])),
+        vcfmaf=temp("{output_dir}/simulations/ld/sims_maf.vcf"),
+        subset=temp("{output_dir}/simulations/ld/sims_subset_x.vcf"),
+        vcfmap=temp("{output_dir}/simulations/ld/sims.map"),
+        vcfped=temp("{output_dir}/simulations/ld/sims.ped"),
+        haploview_inmap=temp("{output_dir}/simulations/ld/haploview_in.map"),
+        haploview_inped=temp("{output_dir}/simulations/ld/haploview_in.ped"),
+        haploview="{output_dir}/simulations/ld/ldPlot.LD.PNG",
+        tmp1=temp("{output_dir}/simulations/ld/sims.nosex"),
+        tmp2=temp("{output_dir}/simulations/ld/sims.log"),
     params:
         haploview=config['haploview'],
         snplimit=config['snplimit'],
@@ -31,7 +31,7 @@ rule LDPlotter:
         ldplotter1=os.path.join('modules','ld','ldplotter1.py'),
         ldplotter2=os.path.join('modules','ld','ldplotter2.py'),
     log: 
-        expand("{outputDIR}/simulations/ld/ld.log",outputDIR=config["outputDIR"]),
+        "{output_dir}/simulations/ld/ld.log",
     run:
         #Filter based on MAF to remove noise
         CallString='bcftools view -q %s %s -Ov -o %s'%(params.ldmaf,input.vcf,output.vcfmaf)
