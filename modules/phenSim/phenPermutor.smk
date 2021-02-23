@@ -14,7 +14,7 @@ def indexerRep(wildcards):
 
 rule phenPermutor:
     input:
-        causalPool="{output_dir}/simulations/genSim/causalPool.bim",
+        causalPool_bim="{output_dir}/simulations/genSim/causalPool.bim",
     output:
         causal=temp("{output_dir}/simulations/phenSim/{replication_index}/causalLoci.snplist"),
     params:
@@ -25,11 +25,11 @@ rule phenPermutor:
         effectSize=config['effect_size_ODR'],
         logNAME="Generate  causalvariant with OR values for phenotype simulation." + strftime("%Y-%m-%d.%H-%M-%S", localtime()),
     run:
-        causals=input.causalPool
+        causals=input.causalPool_bim
         out=os.path.join('/'.join(str(output.causal).split('/')[:-2]),str(params.indexrep),'causalLoci.snplist')
         callString='python3 %s --iterationsPhen %s --replication %s --PlinkFormatCausalBim %s \
         --effectSize %s --out %s ' %(params.phenpermutor,params.iterationsPhen, \
-                                     params.indexrep,input.causalPool,params.effectSize,out)
+                                     params.indexrep,input.causalPool_bim,params.effectSize,out)
         call('echo "' + str(params.logNAME) + ':\n ' + callString + '\n" >> ' + params.shellCallFile, shell=True)
         call(callString, shell=True)
         

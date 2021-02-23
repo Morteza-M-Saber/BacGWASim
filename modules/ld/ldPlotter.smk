@@ -11,7 +11,7 @@ Construct LD plot for the result of each simulation
 rule LDPlotter_bcf:
     """ Filter based on MAF to remove noise. """
     input:
-        vcf = rules.vcfRefiner.output.vcf,
+        vcf = rules.vcfRefiner_markers.output.vcf,
     output:
         vcfmaf = temp("{output_dir}/simulations/ld/sims_maf.vcf"),
     shell:
