@@ -4,11 +4,12 @@ from time import strftime, localtime
 import os
 
 rule all:
-     input:
-             # expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]), simulate phylogeny
-             expand("{outputDIR}/simulations/phenSim/{replication_index}/sim{replication_index}.png",outputDIR=config["outputDIR"],replication_index=range(config['phenReplication'])),
-             expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["outputDIR"]),
-             expand("{outputDIR}/simulations/genSim/sims.pickle",outputDIR=config["outputDIR"]),
+    input:
+        # expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]), simulate phylogeny
+        expand("{outputDIR}/simulations/phenSim/{replication_index}/sim{replication_index}.png",outputDIR=config["outputDIR"],replication_index=range(config['phenReplication'])),
+        expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["outputDIR"]),
+        expand("{outputDIR}/simulations/genSim/sims.pickle",outputDIR=config["outputDIR"]),
+
 
 #step1) genome simulator
 include: os.path.join('modules','genSim','genSim.smk')
