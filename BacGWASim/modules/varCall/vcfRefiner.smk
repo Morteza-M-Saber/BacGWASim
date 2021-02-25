@@ -13,7 +13,7 @@ rule vcfRefiner_reheader:
     output:
         core_rehead = "{output_dir}/simulations/genSim/core_rehead.vcf",
     params:
-        file_rehead = "modules/varCall/rehead.tsv",
+        file_rehead = "BacGWASim/modules/varCall/rehead.tsv",
     shell:
         "bcftools reheader "
         "--samples {params.file_rehead} "

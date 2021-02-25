@@ -1,1 +1,8 @@
+# Snakemake files
 .snakemake
+
+# Python files
+build/
+dist/
+__pycache__/
+
