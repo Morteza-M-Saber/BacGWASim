@@ -12,11 +12,11 @@ rule vcfRefiner_reheader:
         vcf = rules.snpsites.output.vcf,
     output:
         core_rehead = "{output_dir}/simulations/genSim/core_rehead.vcf",
-    params:
-        file_rehead = "BacGWASim/modules/varCall/rehead.tsv",
+        file_rehead = temp("{output_dir}/rehead.tsv"),
     shell:
+        "echo \"0 zero\" > {output.file_rehead} | "
         "bcftools reheader "
-        "--samples {params.file_rehead} "
+        "--samples {output.file_rehead} "
         "--output {output.core_rehead} "
         "{input.vcf}"
 

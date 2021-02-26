@@ -43,26 +43,12 @@ def main(sysargs=sys.argv[1:]):
     with open(config_path) as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
-    # # Extracting information from the config file
-    # if args.config:
-    #     print("Processing args from config file.")
-    #     for key in args.config:
-    #         if key in config:
-    #             config[key] = args.config[key]
-
-    # print(config)
-
-    # Path
-    # bacg_dir = os.path.abspath(os.path.dirname(__file__))
-
-    print('Starting snakemake')
-
-    # # Config
-    # config = dict()
-
-    # config["simbac_path"] =  "../dependencies/sim/SimBac/SimBac"
-    # config["haploview"] =  "../dependencies/ld/Haploview.jar"
-    # config["gcta"] =  "../dependencies/gcta/gcta_1.93.2beta/gcta64"
+    # Extracting information from the config file
+    if args.config:
+        print("Processing args from config file.")
+        for key in args.config:
+            if key in config:
+                config[key] = args.config[key]
 
     snakemake.snakemake(
         snakefile=snakefile_path,

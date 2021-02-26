@@ -1,7 +1,4 @@
-from time import strftime, localtime
 import os
-
-print(os.getcwd())
 
 rule all:
     input:
