@@ -17,6 +17,16 @@ def is_valid_config_file(parser, arg):
     return yaml.load(file, Loader=yaml.FullLoader)
 
 
+def str2bool(arg):
+    if arg.lower() in ["true", "yes", "y", "1"]:
+        return True
+    elif arg.lower() in ["false", "no", "n", "0"]:
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
+
 def main(sysargs=sys.argv[1:]):
     # Path
     bac_path = os.path.dirname(os.path.realpath(__file__))
@@ -86,22 +96,22 @@ def main(sysargs=sys.argv[1:]):
     )
     phen_group.add_argument(
         "--causal-maf-min",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Minimum Minor Allele Frequency (MAF) of causal markers"
     )
     phen_group.add_argument(
         "--causal-maf-max",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Maximum Minor Allele Frequency (MAF) of causal markers"
     )
     phen_group.add_argument(
         "--causal-ld-max",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Maximum permitted R2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting --causal-maf-min and --causal-maf-max thresholds"
     )
     phen_group.add_argument(
         "--effect-size-odr",
-        default=None,
+        default=None, metavar="LIST",
         help="Effect sizes of causal markers (.odds ratios) (comma separated, must be a multiple of --num-causal-var)"
     )
     phen_group.add_argument(
@@ -111,12 +121,12 @@ def main(sysargs=sys.argv[1:]):
     )
     phen_group.add_argument(
         "--heritability",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Heritability of phenotype"
     )
     phen_group.add_argument(
         "--disease-prevalence",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Prevalence of phenotype"
     )
     phen_group.add_argument(
@@ -134,6 +144,11 @@ def main(sysargs=sys.argv[1:]):
     # Arg group - Linkage disequilibrium plotting
     plot_group = parser.add_argument_group("Linkage Disequilibrium plotting")
     plot_group.add_argument(
+        "--plot-ld",
+        default=None, metavar="BOOL", type=str2bool,
+        help="Generate the LD plot"
+    )
+    plot_group.add_argument(
         "--snp-limit",
         default=None, metavar="INT", type=int,
         help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size)"
@@ -145,14 +160,23 @@ def main(sysargs=sys.argv[1:]):
     )
     plot_group.add_argument(
         "--ld-maf",
-        default=None, type=float,
+        default=None, metavar="[0-1]", type=float,
         help="Minimum Minor Allele Frequency of markers for LD plotting (Lower this values, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)"
     )
 
     # Config yaml file as input
     parser.add_argument(
-        "--config", dest="config", help="This is help", metavar="FILE",
-        type=lambda x: is_valid_config_file(parser, x)
+        "--config", dest="config",
+        metavar="FILE", type=lambda x: is_valid_config_file(parser, x),
+        help="Path to a config file", 
+    )
+
+    # Arg group - Runetime parameters
+    run_group = parser.add_argument_group("Runtime parameters")
+    run_group.add_argument(
+        "--cores",
+        default=None, metavar="INT", type=int,
+        help="Number of cores available for computations"
     )
 
     # Parsing args
@@ -164,7 +188,6 @@ def main(sysargs=sys.argv[1:]):
 
     # Extracting information from the config file
     if args.config:
-        print("Processing args from config file.")
         for key in args.config:
             if key in config:
                 config[key] = args.config[key]
@@ -175,13 +198,12 @@ def main(sysargs=sys.argv[1:]):
         if args[arg] is not None:
             config[arg] = args[arg]
 
-    print(config)
-
     # Running snakemake
     snakemake.snakemake(
         snakefile=snakefile_path,
         config=config,
         forceall=True,
+        cores=config["cores"],
     )
 
 

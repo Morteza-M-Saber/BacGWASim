@@ -1,11 +1,18 @@
 import os
 
+def plot_ld(wildcards):
+    plot = "{outputDIR}/simulations/ld/ldPlot.LD.PNG".format(outputDIR=config["output_dir"])
+    if config["plot_ld"]:
+        return plot
+    else:
+        return []
+
+
 rule all:
     input:
-        # expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["output_dir"]), simulate phylogeny
         expand("{outputDIR}/simulations/phenSim/{replication_index}/sim{replication_index}.png",outputDIR=config["output_dir"],replication_index=range(config['phen_replication'])),
-        expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["output_dir"]),
         expand("{outputDIR}/simulations/genSim/sims.pickle",outputDIR=config["output_dir"]),
+        plot_ld
 
 
 #step1) genome simulator
