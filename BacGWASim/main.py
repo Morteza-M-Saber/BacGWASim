@@ -24,10 +24,75 @@ def main(sysargs=sys.argv[1:]):
     config_path = os.path.join(bac_path, "configfile.yaml")
 
     # Argparse parser
-    parser = argparse.ArgumentParser(prog="BacGWASim", description="Description")
+    formatter = lambda prog: argparse.HelpFormatter(prog, max_help_position=52)
+    parser = argparse.ArgumentParser(
+        prog="BacGWASim", description="Description", 
+        formatter_class=formatter
+    )
     parser.add_argument(
         "--version", action="version",
         version="%(prog)s version {version}".format(version=__version__)
+    )
+
+    # Arg group - Genome simulation
+    gen_group = parser.add_argument_group("Genome simulation parameters")
+    gen_group.add_argument(
+        "--num-species",
+        default=None, metavar="INT", type=int,
+        help="Number of samples in the simulated population"
+    )
+    gen_group.add_argument(
+        "--genome-length",
+        default=None, metavar="INT", type=int,
+        help="Length of the genome (bp)"
+    )
+    gen_group.add_argument(
+        "--mutation-rate",
+        default=None, metavar="[0-1[", type=float,
+        help="Mutation rate"
+    )
+    gen_group.add_argument(
+        "--recomb-rate",
+        default=None, metavar="[0-1[", type=float,
+        help="Recombination rate"
+    )
+    gen_group.add_argument(
+        "--maf",
+        default=None, metavar="[0-1[", type=float,
+        help="Minor allele frequency threshold of rare alleles to be discarded"
+    )
+    gen_group.add_argument(
+        "--num-var",
+        default=None, metavar="INT", type=int,
+        help="Number of simulated variants. If '-1', variant number will be solely a function of mutation rate"
+    )
+
+    # Arg group - Phenotype simulation
+    phen_group = parser.add_argument_group("Phenotype simulation parameters")
+    phen_group.add_argument(
+        "--phen-type",
+        default=None, choices=["cc", "quant"],
+        help="Type of simulated phenotype. 'cc':binary case-control, 'quant': quantitative"
+    )
+    phen_group.add_argument(
+        "--num-causal-var",
+        default=None, metavar="INT", type=int,
+        help="Number of causal markers"
+    )
+    phen_group.add_argument(
+        "--causal-maf-min",
+        default=None, type=float,
+        help="Minimum Minor Allele Frequency (MAF) of causal markers"
+    )
+    phen_group.add_argument(
+        "--causal-maf-max",
+        default=None, type=float,
+        help="Maximum Minor Allele Frequency (MAF) of causal markers"
+    )
+    phen_group.add_argument(
+        "--causal-ld-max",
+        default=None, type=float,
+        help="Maximum permitted R2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting --causal-maf-min and --causal-maf-max thresholds"
     )
 
     # Config yaml file as input
@@ -50,6 +115,12 @@ def main(sysargs=sys.argv[1:]):
             if key in config:
                 config[key] = args.config[key]
 
+    # Using cli args (priority)
+    for arg in [arg for arg in vars(args) if arg is not "config"]:
+        if args[arg] is not None:
+            config[arg] = args[arg]
+
+    # Running snakemake
     snakemake.snakemake(
         snakefile=snakefile_path,
         config=config,
