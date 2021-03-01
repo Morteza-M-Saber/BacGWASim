@@ -19,7 +19,7 @@ input_par = snakemake.input.par
 input_phen = snakemake.input.phen
 input_phylo = snakemake.input.phylo
 output_simVis = snakemake.output.simVis
-phenType = snakemake.config["phenType"]
+phenType = snakemake.config["phen_type"]
 
 # Plot variables
 quant_colors = [

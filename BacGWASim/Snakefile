@@ -2,10 +2,10 @@ import os
 
 rule all:
     input:
-        # expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["outputDIR"]), simulate phylogeny
-        expand("{outputDIR}/simulations/phenSim/{replication_index}/sim{replication_index}.png",outputDIR=config["outputDIR"],replication_index=range(config['phenReplication'])),
-        expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["outputDIR"]),
-        expand("{outputDIR}/simulations/genSim/sims.pickle",outputDIR=config["outputDIR"]),
+        # expand("{outputDIR}/phylogeny/phylogeny.nwk",outputDIR=config["output_dir"]), simulate phylogeny
+        expand("{outputDIR}/simulations/phenSim/{replication_index}/sim{replication_index}.png",outputDIR=config["output_dir"],replication_index=range(config['phen_replication'])),
+        expand("{outputDIR}/simulations/ld/ldPlot.LD.PNG",outputDIR=config["output_dir"]),
+        expand("{outputDIR}/simulations/genSim/sims.pickle",outputDIR=config["output_dir"]),
 
 
 #step1) genome simulator

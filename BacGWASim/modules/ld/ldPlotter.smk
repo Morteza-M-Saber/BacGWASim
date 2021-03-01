@@ -16,7 +16,7 @@ rule LDPlotter_bcf:
         vcfmaf = temp("{output_dir}/simulations/ld/sims_maf.vcf"),
     shell:
         "bcftools view "
-        "-q {config[ldmaf]} {input.vcf} "
+        "-q {config[ld_maf]} {input.vcf} "
         "-Ov -o {output.vcfmaf}"
 
 
@@ -76,5 +76,5 @@ rule LDPlotter:
         "-compressedpng "
         "-chromosome X "
         "-maxDistance 10000 "
-        "-memory {config[heapSize]} "
+        "-memory {config[heap_size]} "
         "-out {params.output}"            

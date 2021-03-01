@@ -3,7 +3,7 @@ from shutil import copyfile
 
 vcf_input = snakemake.input.vcf
 vcf_output = snakemake.output.vcf
-varNumber = snakemake.config["varNumber"]
+varNumber = snakemake.config["num_var"]
 
 if varNumber != -1:
     info_lines = []

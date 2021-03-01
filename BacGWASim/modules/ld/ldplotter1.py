@@ -41,6 +41,6 @@ def vcf2haploview(vcf, snplimit, out):
 
 # Running vcf2haploview
 vcf = snakemake.input.vcfmaf
-snplimit = snakemake.config["snplimit"]
+snplimit = snakemake.config["snp_limit"]
 out = snakemake.output.subset
 vcf2haploview(vcf, snplimit, out)

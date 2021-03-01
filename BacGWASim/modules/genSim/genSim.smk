@@ -18,7 +18,7 @@ rule genSim:
         "{config[simbac_path]} "
         "-N {config[num_species]} "
         "-B {config[genome_length]} "
-        "-R {config[r_i]} "
+        "-R {config[recomb_rate]} "
         "-r 0 "
         "-T {config[mutation_rate]} "
         "-o {output.fasta} "

@@ -66,6 +66,11 @@ def main(sysargs=sys.argv[1:]):
         default=None, metavar="INT", type=int,
         help="Number of simulated variants. If '-1', variant number will be solely a function of mutation rate"
     )
+    gen_group.add_argument(
+        "--random-seed",
+        default=None, metavar="INT", type=int,
+        help="Random seed for reproducibility of results"
+    )
 
     # Arg group - Phenotype simulation
     phen_group = parser.add_argument_group("Phenotype simulation parameters")
