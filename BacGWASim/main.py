@@ -94,6 +94,55 @@ def main(sysargs=sys.argv[1:]):
         default=None, type=float,
         help="Maximum permitted R2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting --causal-maf-min and --causal-maf-max thresholds"
     )
+    phen_group.add_argument(
+        "--effect-size-odr",
+        default=None,
+        help="Effect sizes of causal markers (.odds ratios) (comma separated, must be a multiple of --num-causal-var)"
+    )
+    phen_group.add_argument(
+        "--phen-replication",
+        default=None, metavar="INT", type=int,
+        help="Number of phenotype replication sets"
+    )
+    phen_group.add_argument(
+        "--heritability",
+        default=None, type=float,
+        help="Heritability of phenotype"
+    )
+    phen_group.add_argument(
+        "--disease-prevalence",
+        default=None, type=float,
+        help="Prevalence of phenotype"
+    )
+    phen_group.add_argument(
+        "--case",
+        default=None, type=float,
+        help="In case of case-control binary phenotype simulation, number of case and control samples must be defined by 'case' and 'control' parameters"
+    )
+    phen_group.add_argument(
+        "--control",
+        default=None, type=float,
+        help="In case of case-control binary phenotype simulation, number of case and control samples must be defined by 'case' and 'control' parameters"
+    )
+
+
+    # Arg group - Linkage disequilibrium plotting
+    plot_group = parser.add_argument_group("Linkage Disequilibrium plotting")
+    plot_group.add_argument(
+        "--snp-limit",
+        default=None, metavar="INT", type=int,
+        help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size)"
+    )
+    plot_group.add_argument(
+        "--heap-size",
+        default=None, metavar="INT", type=int,
+        help="Java heap_size for ld plot visualization (.mb)"
+    )
+    plot_group.add_argument(
+        "--ld-maf",
+        default=None, type=float,
+        help="Minimum Minor Allele Frequency of markers for LD plotting (Lower this values, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)"
+    )
 
     # Config yaml file as input
     parser.add_argument(
@@ -116,9 +165,12 @@ def main(sysargs=sys.argv[1:]):
                 config[key] = args.config[key]
 
     # Using cli args (priority)
-    for arg in [arg for arg in vars(args) if arg is not "config"]:
+    args = vars(args)
+    for arg in [arg for arg in args if arg is not "config"]:
         if args[arg] is not None:
             config[arg] = args[arg]
+
+    print(config)
 
     # Running snakemake
     snakemake.snakemake(
