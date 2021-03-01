@@ -1,0 +1,17 @@
+include BacGWASim/Snakefile
+include BacGWASim/configfile.yaml
+include BacGWASim/modules/genSim/genSim.smk
+include BacGWASim/modules/ld/ldPlotter.smk
+include BacGWASim/modules/ld/ldplotter1.py
+include BacGWASim/modules/ld/ldplotter2.py
+include BacGWASim/modules/phenSim/phenPermutor.py
+include BacGWASim/modules/phenSim/phenPermutor.smk
+include BacGWASim/modules/phenSim/phenSim.py
+include BacGWASim/modules/phenSim/phenSim.smk
+include BacGWASim/modules/varCall/snpSites.smk
+include BacGWASim/modules/varCall/vcfRefiner_helper1.py
+include BacGWASim/modules/varCall/vcfRefiner_helper2.py
+include BacGWASim/modules/varCall/vcfRefiner.smk
+include BacGWASim/modules/visualizers/simVis_phyloCorrector.py
+include BacGWASim/modules/visualizers/simVis.py
+include BacGWASim/modules/visualizers/simVis.smk

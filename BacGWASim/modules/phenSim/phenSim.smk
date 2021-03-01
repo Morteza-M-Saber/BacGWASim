@@ -20,9 +20,9 @@ rule phenSim:
         plink_input = "{output_dir}/simulations/genSim/sims",
         gcta_output = "{output_dir}/simulations/phenSim/{replication_index}/phenSim",
     run:
-        if config["phenType"] == "cc":
+        if config["phen_type"] == "cc":
           simu = "--simu-cc {config[case]} {config[control]}"
-        elif config["phenType"] == "quant":
+        elif config["phen_type"] == "quant":
           simu = "--simu-qt"
 
         shell(
@@ -30,7 +30,7 @@ rule phenSim:
           "--bfile {params.plink_input} "
           "--simu-causal-loci {input.causal} "
           "--simu-hsq {config[heritability]} "
-          "--simu-k {config[diseasePrevalence]} "
+          "--simu-k {config[disease_prevalence]} "
           "--out {params.gcta_output} " 
           + simu
         )

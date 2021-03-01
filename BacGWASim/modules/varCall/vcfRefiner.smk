@@ -12,11 +12,11 @@ rule vcfRefiner_reheader:
         vcf = rules.snpsites.output.vcf,
     output:
         core_rehead = "{output_dir}/simulations/genSim/core_rehead.vcf",
-    params:
-        file_rehead = "modules/varCall/rehead.tsv",
+        file_rehead = temp("{output_dir}/rehead.tsv"),
     shell:
+        "echo \"0 zero\" > {output.file_rehead} | "
         "bcftools reheader "
-        "--samples {params.file_rehead} "
+        "--samples {output.file_rehead} "
         "--output {output.core_rehead} "
         "{input.vcf}"
 
@@ -95,8 +95,8 @@ rule vcfRefiner_causal:
         vcf_causal = "{output_dir}/simulations/genSim/simsCausal.vcf",
     shell:
         "bcftools view {input.vcf} "
-        "-q {config[causalMAF]} "
-        "-Q {config[causalMaxMAF]} "
+        "-q {config[causal_maf_min]} "
+        "-Q {config[causal_maf_max]} "
         "-Ov -o {output.vcf_causal}"
 
 
@@ -108,7 +108,7 @@ rule vcfRefiner_pruning:
         vcf_pruned = "{output_dir}/simulations/genSim/sims_LDpruned.vcf",
     shell:
         "bcftools +prune "
-        "-l {config[causalMaxLD]} "
+        "-l {config[causal_ld_max]} "
         "-w 1000 {input.vcf_causal} "
         "-Ov -o {output.vcf_pruned} "
 

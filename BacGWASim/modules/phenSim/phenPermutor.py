@@ -5,8 +5,8 @@ import os
 # Snakemake variables
 input_file = snakemake.input.causalPool_bim
 output_file = snakemake.output.causal
-iterationsPhen = snakemake.config["causal_variant_Num"]
-effectSize = snakemake.config["effect_size_ODR"]
+iterationsPhen = snakemake.config["num_causal_var"]
+effectSize = snakemake.config["effect_size_odr"]
 
 snpList = []
 variantNums = int(iterationsPhen)
