@@ -15,7 +15,7 @@ rule genSim:
         fasta = "{output_dir}/simulations/genSim/genSim.fasta",
         phylogeny = temp("{output_dir}/simulations/genSim/genSim.nwk"),
     shell:
-        "{config[simbac_path]} "
+        "SimBac "
         "-N {config[num_species]} "
         "-B {config[genome_length]} "
         "-R {config[recomb_rate]} "

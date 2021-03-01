@@ -26,7 +26,7 @@ rule phenSim:
           simu = "--simu-qt"
 
         shell(
-          "{config[gcta]} "
+          "gcta64 "
           "--bfile {params.plink_input} "
           "--simu-causal-loci {input.causal} "
           "--simu-hsq {config[heritability]} "

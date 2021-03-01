@@ -1,13 +1,6 @@
 # Output directory name
 output_dir: BACGWASIM_quant_s100_m0.05_r0.01
 
-
-# BacGWASim dependencies not provided by conda channels
-simbac_path: dependencies/sim/SimBac/SimBac
-haploview: dependencies/ld/Haploview.jar
-gcta: dependencies/gcta/gcta_1.93.2beta/gcta64
-
-
 # Genome simulation parameters
 num_species: 200      # Number of samples in the simulated population
 genome_length: 20000  # Length of the genome (.bp)

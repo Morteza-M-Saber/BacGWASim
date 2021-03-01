@@ -68,7 +68,7 @@ rule LDPlotter:
     params:
         output = "{output_dir}/simulations/ld/ldPlot"
     shell:
-        "java -jar {config[haploview]} "
+        "haploview "
         "-nogui "
         "-pedfile {input.haploview_inped} "
         "-info {input.haploview_inmap} "
