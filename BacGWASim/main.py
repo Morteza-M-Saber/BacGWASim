@@ -43,6 +43,16 @@ def main(sysargs=sys.argv[1:]):
         "--version", action="version",
         version="%(prog)s version {version}".format(version=__version__)
     )
+    parser.add_argument(
+        "--config", dest="config",
+        metavar="FILE", type=lambda x: is_valid_config_file(parser, x),
+        help="Path to a config file", 
+    )
+    parser.add_argument(
+        "--output-dir",
+        metavar="DIR",
+        help="Path to the output directory", 
+    )
 
     # Arg group - Genome simulation
     gen_group = parser.add_argument_group("Genome simulation parameters")
@@ -164,19 +174,17 @@ def main(sysargs=sys.argv[1:]):
         help="Minimum Minor Allele Frequency of markers for LD plotting (Lower this values, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)"
     )
 
-    # Config yaml file as input
-    parser.add_argument(
-        "--config", dest="config",
-        metavar="FILE", type=lambda x: is_valid_config_file(parser, x),
-        help="Path to a config file", 
-    )
-
     # Arg group - Runetime parameters
     run_group = parser.add_argument_group("Runtime parameters")
     run_group.add_argument(
         "--cores",
         default=None, metavar="INT", type=int,
         help="Number of cores available for computations"
+    )
+    run_group.add_argument(
+        "--latency-wait",
+        default=3, metavar="INT", type=int,
+        help="Time to wait (in sec) after a job to ensure all files are present"
     )
 
     # Parsing args
@@ -204,6 +212,7 @@ def main(sysargs=sys.argv[1:]):
         config=config,
         forceall=True,
         cores=config["cores"],
+        latency_wait=config["latency_wait"],
     )
 
 

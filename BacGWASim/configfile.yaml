@@ -1,5 +1,5 @@
 # Output directory name
-output_dir: BACGWASIM_quant_s100_m0.05_r0.01
+output_dir: results_BacGWASim  # Path to the output directory
 
 # Genome simulation parameters
 num_species: 200      # Number of samples in the simulated population
@@ -30,4 +30,5 @@ heap_size: 1000  # Java heap_size for ld plot visualization (.mb)
 ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this values, it is more difficult to estiamte accurate r2 values between pairs of markers leading to more noisy plot)
 
 # Runtime parameters
-cores: 1        # Number of cores available for computations
+cores: 1         # Number of cores available for computations
+latency_wait: 3  # Time to wait (in sec) after a job to ensure all files are present
