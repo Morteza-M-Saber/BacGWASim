@@ -1,4 +1,5 @@
 # BacGWASim
+
 A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v1.2)
 
 ---
@@ -50,7 +51,7 @@ cd BacGWASim
 mamba env create --file requirements.yaml
 ```
 
-3. Build the python package. 
+3. Build the python package.
 
 ```bash
 python setup.py build install
