@@ -39,11 +39,14 @@ rule LDPlotter_plink:
         vcfped = temp("{output_dir}/simulations/ld/sims.ped"),
     params:
         output = "{output_dir}/simulations/ld/sims"
+    log:
+        "{output_dir}/logs/LDPlotter_plink.log"
     shell:
         "plink "
         "--vcf {input.subset} "
         "--recode "
-        "--out {params.output}"
+        "--out {params.output} "
+        "1> {log}"
 
 
 rule LDPlotter_helper2:
@@ -67,6 +70,8 @@ rule LDPlotter:
         haploview="{output_dir}/simulations/ld/ldPlot.LD.PNG",
     params:
         output = "{output_dir}/simulations/ld/ldPlot"
+    log:
+        "{output_dir}/logs/LDPlotter.log"
     shell:
         "haploview "
         "-nogui "
@@ -77,4 +82,5 @@ rule LDPlotter:
         "-chromosome X "
         "-maxDistance 10000 "
         "-memory {config[heap_size]} "
-        "-out {params.output}"            
+        "-out {params.output} "
+        "1> {log}"            

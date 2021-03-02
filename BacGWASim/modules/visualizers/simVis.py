@@ -95,20 +95,17 @@ elif phenType == 'quant':
     data['bin'].replace(7, 6, inplace=True)
     for sample_phen in zip(data[1], data['bin']):
         PhenoDict[sample_phen[0]] = str(sample_phen[1])
-print('Visualizer Step1 completed!')
 
 # 2) Input the causal variant list and generate  an array out of it
 # Getting the list of all samples
 vcf_reader = vcf.Reader(open(input_vcf, 'r'))
 record = next(vcf_reader)
 Samples = vcf_reader.samples
-print('Visualizer Step2 completed!')
 
 # 3) Getting the list of causal variants
 MyCausalList = pd.read_table(input_par)
 MyCausalList.set_index('QTL', inplace=True)
 CausalList = MyCausalList.index.tolist()
-print('Visualizer Step3 completed!')
 
 # 4) Generate an empty array (list for now)
 ProfileList = []
@@ -117,7 +114,6 @@ HeaderList = ['#Names']
 for CausalMarkers in CausalList:
     HeaderList.append(CausalMarkers)
 ProfileList.append(HeaderList)
-print('Visualizer Step4 completed!')
 
 # 5) Iterate over samples present in the phylogenetic tree
 ProfileListDic = {}
@@ -144,7 +140,7 @@ for records in vcf_reader:
         break
 for item in Samples:
     ProfileList.append(ProfileListDic[item])
-print('Visualizer Step5 completed!')
+
 # Generate an Textarray out of the CausalLoci PresenceAbsence
 Matrix = str()
 for Profiles in ProfileList:
@@ -178,4 +174,3 @@ elif phenType == 'quant':
             round(bins[i], 1), round(bins[i+1], 1)), fsize=30), column=1)
 
 t.render(output_simVis, dpi=300, tree_style=ts)
-print('Visualizer Successfully completed!')

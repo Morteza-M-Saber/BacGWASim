@@ -21,28 +21,43 @@ rule vcfRefiner_reheader:
         "{input.vcf}"
 
 
-rule vcfRefiner_norm_annotate:
-    """ Adding an ID tag with chrom, pos, ref and alt. """
+rule vcfRefiner_norm:
     input:
         core_rehead = rules.vcfRefiner_reheader.output.core_rehead,
     output:
-        vcf_no_selec = "{output_dir}/simulations/genSim/sims_no_selection.vcf",
+        core_norm = temp("{output_dir}/simulations/genSim/sims_norm.vcf"),
+    log:
+        "{output_dir}/logs/vcfRefiner_norm.log"
     shell:
         "bcftools norm "
-        "-Ou "
         "-m "
         "-any "
-        "{input.core_rehead} | "
+        "-Ov -o {output.core_norm} "
+        "{input.core_rehead} "
+        "&> {log}"
+
+
+rule vcfRefiner_annotate:
+    """ Adding an ID tag with chrom, pos, ref and alt. """
+    input:
+        core_norm = rules.vcfRefiner_norm.output.core_norm,
+    output:
+        vcf_no_selec = "{output_dir}/simulations/genSim/sims_no_selection.vcf",
+    log:
+        "{output_dir}/logs/vcfRefiner_annotate.log"
+    shell:
         "bcftools annotate "
         "-x ID "
         "-I +%CHROM:%POS:%REF:%ALT "
         "-Ov -o {output.vcf_no_selec} "
+        "{input.core_norm} "
+        "&> {log}"
 
 
 rule vcfRefiner_purifying:
     """ Simulating purification selection by removing rare mutations. """
     input:
-        vcf_no_selec = rules.vcfRefiner_norm_annotate.output.vcf_no_selec,
+        vcf_no_selec = rules.vcfRefiner_annotate.output.vcf_no_selec,
     output:
         vcf = temp("{output_dir}/simulations/genSim/sims_raw.vcf"),
     shell:
@@ -78,13 +93,16 @@ rule vcfRefiner_sim2plink:
         plink_nosex = temp("{output_dir}/simulations/genSim/sims.nosex"),
     params:
         output = "{output_dir}/simulations/genSim/sims",
+    log:
+        "{output_dir}/logs/vcfRefiner_sim2plink.log"
     shell:
         "plink "
         "--vcf {input.vcf} "
         "--allow-extra-chr "
         "--keep-allele-order "
         "--make-bed "
-        "--out {params.output}"
+        "--out {params.output} "
+        "&> {log}"
 
 
 rule vcfRefiner_causal:
@@ -125,13 +143,16 @@ rule vcfRefiner_causalPool:
         causalPool_nosex = temp("{output_dir}/simulations/genSim/causalPool.nosex"),
     params:
         output = "{output_dir}/simulations/genSim/causalPool",
+    log:
+        "{output_dir}/logs/vcfRefiner_causalPool.log"
     shell:
         "plink "
         "--vcf {input.vcf_pruned} "
         "--allow-extra-chr "
         "--keep-allele-order "
         "--make-bed "
-        "--out {params.output}"
+        "--out {params.output} "
+        "&> {log}"
 
 
 rule vcfRefiner_matrix:
