@@ -46,7 +46,7 @@ rule LDPlotter_plink:
         "--vcf {input.subset} "
         "--recode "
         "--out {params.output} "
-        "1> {log}"
+        "&> {log}"
 
 
 rule LDPlotter_helper2:
@@ -83,4 +83,4 @@ rule LDPlotter:
         "-maxDistance 10000 "
         "-memory {config[heap_size]} "
         "-out {params.output} "
-        "1> {log}"            
+        "&> {log}"            

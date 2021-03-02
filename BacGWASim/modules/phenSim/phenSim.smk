@@ -35,7 +35,7 @@ rule phenSim:
           "--simu-k {config[disease_prevalence]} "
           "--out {params.gcta_output} " 
           + simu
-          + " 1> {log}"
+          + " &> {log}"
         )
 
 
