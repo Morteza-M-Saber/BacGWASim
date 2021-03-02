@@ -1,4 +1,4 @@
-#BacGWASim1.2
+# BacGWASim
 A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v1.2)
 
 ---
