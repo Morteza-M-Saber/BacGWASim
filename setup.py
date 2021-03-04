@@ -8,7 +8,7 @@ setup(
     author="Masih M. Saber",
     author_email="morteza.mahmoudisaber@gmail.com",
     description="BacGWASim command line interface",
-    license="",
+    license="MIT",
     packages=["BacGWASim"],
     entry_points="""
     [console_scripts]
