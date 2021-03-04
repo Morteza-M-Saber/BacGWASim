@@ -15,19 +15,19 @@ phen_type: quant                      # Type of simulated phenotype,'cc':binary 
 num_causal_var: 16                    # Number of causal markers
 causal_maf_min: 0.1                   # Minimum MinorAlleleFrequency of causal markers
 causal_maf_max: 0.4                   # Maximum MinorAlleleFrequency of causal markers
-causal_ld_max: 0.6                    # Maximum permitted r2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting causalMAF and causalMaxMaf thresholds
-effect_size_odr: 2,3,4,7,10,11,15,20  # Effect sizes of causal markers (.odds ratios) (comma separated,Must be a multiple of causal_variant_Num)
+causal_ld_max: 0.6                    # Maximum permitted r2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting causal_maf_min and causal_maf_max thresholds
+effect_size_odr: 2,3,4,7,10,11,15,20  # Effect sizes of causal markers (.odds ratios) (comma separated, must be a multiple of num_causal_var)
 phen_replication: 10                  # Number of phenotype replication sets
 heritability: 1                       # Heritability of phenotype
 disease_prevalence: 0.5               # Prevalence of phenotype
-case: 50                              # In case of case-control binary phenotype simulation, number of case and control samples must be defined by 'case' and 'control' parameters
-control: 50
+case: 50                              # Use when phen_type='cc', case + control must not be bigger than num_species
+control: 50                           # Use when phen_type='cc', case + control must not be bigger than num_species
 
 # Linkage Disequilibrium plotting
-plot_ld: False    # Generate the LD plot
+plot_ld: False   # Generate the LD plot
 snp_limit: 3000  # Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size
 heap_size: 1000  # Java heap_size for ld plot visualization (.mb)
-ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this values, it is more difficult to estiamte accurate r2 values between pairs of markers leading to more noisy plot)
+ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this value, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)
 
 # Runtime parameters
 cores: 1         # Number of cores available for computations

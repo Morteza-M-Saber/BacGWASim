@@ -5,6 +5,7 @@ import sys
 import yaml
 
 from . import _program, __version__
+from .arg_parsing import parsing_config
 
 
 def is_valid_config_file(parser, arg):
@@ -205,6 +206,9 @@ def main(sysargs=sys.argv[1:]):
     for arg in [arg for arg in args if arg is not "config"]:
         if args[arg] is not None:
             config[arg] = args[arg]
+
+    # Parsing the configuration
+    parsing_config(config)
 
     # Running snakemake
     snakemake.snakemake(
