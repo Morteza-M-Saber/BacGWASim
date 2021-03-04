@@ -5,8 +5,11 @@ from BacGWASim import __version__, _program
 setup(
     name=_program,
     version=__version__,
-    packages=["BacGWASim"],
+    author="Masih M. Saber",
+    author_email="morteza.mahmoudisaber@gmail.com",
     description="BacGWASim command line interface",
+    license="",
+    packages=["BacGWASim"],
     entry_points="""
     [console_scripts]
     {program} = BacGWASim.main:main
