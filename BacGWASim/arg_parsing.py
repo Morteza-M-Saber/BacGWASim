@@ -35,6 +35,10 @@ def parsing_config(config):
     if config["causal_maf_min"] >= config["causal_maf_max"]:
         raise ValueError("--causal-maf-min must be smaller than --causal-maf-max")
 
+    # plot_ld must be a bool
+    if config["plot_ld"] not in [True, False]:
+        raise ValueError("--plot-ld must be True or False")
+
 
 def is_percentage_exclusive(param, val):
     if (val <= 0) or (val >= 1):
