@@ -69,17 +69,17 @@ def main(sysargs=sys.argv[1:]):
     )
     gen_group.add_argument(
         "--mutation-rate",
-        default=None, metavar="[0-1[", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Mutation rate"
     )
     gen_group.add_argument(
         "--recomb-rate",
-        default=None, metavar="[0-1[", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Recombination rate"
     )
     gen_group.add_argument(
         "--maf",
-        default=None, metavar="[0-1[", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Minor allele frequency threshold of rare alleles to be discarded"
     )
     gen_group.add_argument(
@@ -107,12 +107,12 @@ def main(sysargs=sys.argv[1:]):
     )
     phen_group.add_argument(
         "--causal-maf-min",
-        default=None, metavar="[0-1]", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Minimum Minor Allele Frequency (MAF) of causal markers"
     )
     phen_group.add_argument(
         "--causal-maf-max",
-        default=None, metavar="[0-1]", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Maximum Minor Allele Frequency (MAF) of causal markers"
     )
     phen_group.add_argument(
@@ -137,7 +137,7 @@ def main(sysargs=sys.argv[1:]):
     )
     phen_group.add_argument(
         "--disease-prevalence",
-        default=None, metavar="[0-1]", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Prevalence of phenotype"
     )
     phen_group.add_argument(
@@ -162,7 +162,7 @@ def main(sysargs=sys.argv[1:]):
     plot_group.add_argument(
         "--snp-limit",
         default=None, metavar="INT", type=int,
-        help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size)"
+        help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significantly increase computation time and require increasing the java heap size)"
     )
     plot_group.add_argument(
         "--heap-size",
@@ -171,7 +171,7 @@ def main(sysargs=sys.argv[1:]):
     )
     plot_group.add_argument(
         "--ld-maf",
-        default=None, metavar="[0-1]", type=float,
+        default=None, metavar="]0-1[", type=float,
         help="Minimum Minor Allele Frequency of markers for LD plotting (Lower this values, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)"
     )
 
@@ -185,7 +185,7 @@ def main(sysargs=sys.argv[1:]):
     run_group.add_argument(
         "--latency-wait",
         default=3, metavar="INT", type=int,
-        help="Time to wait (in sec) after a job to ensure all files are present"
+        help="Time to wait (in sec) after a job to ensure that all files are present"
     )
 
     # Parsing args

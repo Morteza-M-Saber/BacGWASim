@@ -8,7 +8,7 @@ setup(
     author="Masih M. Saber",
     author_email="morteza.mahmoudisaber@gmail.com",
     description="BacGWASim: A simulator for Bacterial Machine learning and Genome-wide Association studies.",
-    url="https://github.com/Morteza-M-Saber/BacGWASim"
+    url="https://github.com/Morteza-M-Saber/BacGWASim",
     license="MIT",
     packages=["BacGWASim"],
     entry_points="""

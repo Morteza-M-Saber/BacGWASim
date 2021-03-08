@@ -5,7 +5,7 @@ def parsing_config(config):
     # Must be percentages
     are_percentages_exclusive = [
         "mutation_rate", "recomb_rate", "maf",
-        "causal_maf_min", "causal_maf_max", "causal_ld_max",
+        "causal_maf_min", "causal_maf_max",
         "disease_prevalence", "ld_maf"
     ]
 
