@@ -1,0 +1,9 @@
+# Snakemake files
+.snakemake
+
+# Python files
+build/
+dist/
+__pycache__/
+BacGWASim/__pycache__/
+BacGWASim.egg-info/

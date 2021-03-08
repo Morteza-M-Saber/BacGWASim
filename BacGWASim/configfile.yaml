@@ -1,0 +1,34 @@
+# Output directory name
+output_dir: results_BacGWASim  # Path to the output directory
+
+# Genome simulation parameters
+num_species: 200      # Number of samples in the simulated population
+genome_length: 20000  # Length of the genome (.bp)
+mutation_rate: 0.06   # Mutation rate
+recomb_rate: 0.01     # Recombination rate
+maf: 0.01             # Minor allele frequency threshold of rare alleles to be discarded
+num_var: -1           # Number of simulated variants, if kept '-1', variant number will be solely a function of mutation rate
+random_seed: 1487     # Random seed for reproducibility of results
+
+# Phenotype simulation parameters
+phen_type: quant                      # Type of simulated phenotype,'cc':binary case-control, 'quant': quantitative
+num_causal_var: 16                    # Number of causal markers
+causal_maf_min: 0.1                   # Minimum MinorAlleleFrequency of causal markers
+causal_maf_max: 0.4                   # Maximum MinorAlleleFrequency of causal markers
+causal_ld_max: 0.6                    # Maximum permitted r2 score between pairs of causal markers in window size of 1000 candidate causal markers meeting causal_maf_min and causal_maf_max thresholds
+effect_size_odr: 2,3,4,7,10,11,15,20  # Effect sizes of causal markers (.odds ratios) (comma separated, must be a multiple of num_causal_var)
+phen_replication: 10                  # Number of phenotype replication sets
+heritability: 1                       # Heritability of phenotype
+disease_prevalence: 0.5               # Prevalence of phenotype
+case: 50                              # Use when phen_type='cc', case + control must not be bigger than num_species
+control: 50                           # Use when phen_type='cc', case + control must not be bigger than num_species
+
+# Linkage Disequilibrium plotting
+plot_ld: False   # Generate the LD plot
+snp_limit: 3000  # Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size
+heap_size: 1000  # Java heap_size for ld plot visualization (.mb)
+ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this value, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)
+
+# Runtime parameters
+cores: 1         # Number of cores available for computations
+latency_wait: 3  # Time to wait (in sec) after a job to ensure all files are present
