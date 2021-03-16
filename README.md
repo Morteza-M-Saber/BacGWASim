@@ -1,6 +1,9 @@
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/bacgwasim/badges/installer/conda.svg)](https://conda.anaconda.org/bioconda)
+[![Bioconda](https://img.shields.io/conda/dn/bioconda/bacgwasim.svg?label=Bioconda)](https://bioconda.github.io/recipes/bacgwasim/README.html)
+
 # BacGWASim
 
-A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.0)
+A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.0.0)
 
 ---
 
@@ -14,7 +17,7 @@ BacGWASim is designed to simulate whole-genomes and phenotypes of large bacteria
 
 Original BacGWASim implementation paper: `Saber, Morteza M., Shapiro, B Jesse` [Benchmarking bacterial genome-wide association study methods using simulated genomes and phenotypes.](https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000337#tab2) `Microbial Genomics https://doi.org/10.1099/mgen.0.000337`
 
-## Prerequisites
+## Requirements
 
 Between parenthesis the versions the script was tested against:
 
@@ -33,11 +36,18 @@ Between parenthesis the versions the script was tested against:
 - `Haploview` (4.2)
 - `simbac` (commit `5015897`)
 
-## Installation
+## Installation - Using conda
+BacGWASim is currently available on Bioconda. To install, run the following command. It is recommended to use `mamba` instead of `conda` for a quicker installation. 
+```bash
+conda create -n BacGWASim bacgwasim -c conda-forge -c bioconda
+conda activate BacGWASim
+```
+
+## Installation - Using the repository
 
 BacGWASim is build based on Snakemake and can be installed locally as following:
 
-1.  clone workflow into working directory
+1.  Clone workflow into working directory
 
 ```
 git clone https://github.com/Morteza-M-Saber/BacGWASim.
