@@ -5,18 +5,24 @@
 
 """
 
+rule vcfRefiner_file:
+    """ Creating the reheader file needed by bcftools. """
+    output:
+        file_rehead = temp("{output_dir}/rehead.tsv"),
+    shell:
+        "echo \"0 zero\" > {output.file_rehead}"
+
 
 rule vcfRefiner_reheader:
     """ Changing sample 0 to sample zero as required by plink. """
     input:
         vcf = rules.snpsites.output.vcf,
+        file_rehead = rules.vcfRefiner_file.output.file_rehead,
     output:
         core_rehead = temp("{output_dir}/simulations/genSim/core_rehead.vcf"),
-        file_rehead = temp("{output_dir}/rehead.tsv"),
     shell:
-        "echo \"0 zero\" > {output.file_rehead} | "
         "bcftools reheader "
-        "--samples {output.file_rehead} "
+        "--samples {input.file_rehead} "
         "--output {output.core_rehead} "
         "{input.vcf}"
 
