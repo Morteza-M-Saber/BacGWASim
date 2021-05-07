@@ -1,0 +1,34 @@
+# Output directory name
+output_dir: $OUTPUT_DIR
+
+# Genome simulation parameters
+num_species: $NUM_SPECIES
+genome_length: $GENOME_LENGTH
+mutation_rate: $MUTATION_RATE
+recomb_rate: $RECOMB_RATE
+maf: $MAF
+num_var: $NUM_VAR
+random_seed: $RANDOM_SEED
+
+# Phenotype simulation parameters
+phen_type: $PHEN_TYPE
+num_causal_var: $NUM_CAUSAL_VAR
+causal_maf_min: $CAUSAL_MAF_MIN
+causal_maf_max: $CAUSAL_MAF_MAX
+causal_ld_max: $CAUSAL_LD_MAX
+effect_size_odr: $EFFECT_SIZE_ODR
+phen_replication: $PHEN_REPLICATION
+heritability: $HERITABILITY
+disease_prevalence: $DISEASE_PREVALENCE
+case: $CASE
+control: $CONTROL
+
+# Linkage Disequilibrium plotting
+plot_ld: $PLOT_LD
+snp_limit: $SNP_LIMIT
+heap_size: $HEAP_SIZE
+ld_maf: $LD_MAF
+
+# Runtime parameters
+cores: $CORES
+latency_wait: $LATENCY_WAIT
