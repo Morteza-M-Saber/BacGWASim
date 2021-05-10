@@ -11,6 +11,7 @@ dependencies:
   - pyvcf==0.6.8
   - scipy==1.5.2
   - numpy==1.19.2
+  - matplotlib
   - snakemake==5.31.1
   - snp-sites==2.5.1
   - bcftools==1.10.2

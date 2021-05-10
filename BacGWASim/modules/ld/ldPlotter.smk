@@ -67,7 +67,8 @@ rule LDPlotter:
         haploview_inmap = rules.LDPlotter_helper2.output.haploview_inmap,
         haploview_inped = rules.LDPlotter_helper2.output.haploview_inped,
     output:
-        haploview="{output_dir}/simulations/ld/ldPlot.LD.PNG",
+        haploview = "{output_dir}/simulations/ld/ldPlot.LD.PNG",
+        haploview_ld = "{output_dir}/simulations/ld/ldPlot.LD",
     params:
         output = "{output_dir}/simulations/ld/ldPlot"
     log:
@@ -84,3 +85,13 @@ rule LDPlotter:
         "-memory {config[heap_size]} "
         "-out {params.output} "
         "&> {log}"            
+
+
+rule ld_stackplot:
+    """ Generating LD stacked plot. """
+    input:
+        haploview_ld = "{output_dir}/simulations/ld/ldPlot.LD",
+    output:
+        ld_stackplot = "{output_dir}/simulations/ld/ld_stackplot.png",
+    script:
+        "ld_stackplot.py"
