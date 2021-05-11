@@ -1,4 +1,4 @@
-
+import os
 
 def parsing_config(config):
 
@@ -47,3 +47,15 @@ def is_percentage_exclusive(param, val):
 def is_percentage_inclusive(param, val):
     if (val < 0) or (val > 1):
         raise ValueError(param + " value must be between 0 and 1 (inclusive, [0-1])")
+
+
+def config2file(config, template):
+    with open(template, "r") as file:
+        template_data = file.read()
+
+    for key, val in config.items():
+        template_data = template_data.replace("$" + key.upper(), str(val))
+
+    template_output = os.path.join(config["output_dir"], "configfile.yaml")
+    with open(template_output, "w") as file:
+        file.write(template_data)

@@ -1,7 +1,11 @@
 import os
 
 def plot_ld(wildcards):
-    plot = "{outputDIR}/simulations/ld/ldPlot.LD.PNG".format(outputDIR=config["output_dir"])
+    plot = [
+        "{outputDIR}/simulations/ld/ldPlot.LD.PNG".format(outputDIR=config["output_dir"]),
+        "{outputDIR}/simulations/ld/ld_stackplot.png".format(outputDIR=config["output_dir"]),
+    ]
+    
     if config["plot_ld"]:
         return plot
     else:

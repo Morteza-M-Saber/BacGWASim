@@ -5,7 +5,7 @@ import sys
 import yaml
 
 from . import _program, __version__
-from .arg_parsing import parsing_config
+from .arg_parsing import parsing_config, config2file
 
 
 def is_valid_config_file(parser, arg):
@@ -209,6 +209,10 @@ def main(sysargs=sys.argv[1:]):
 
     # Parsing the configuration
     parsing_config(config)
+
+    # Saving the modified config file in the results
+    template = "BacGWASim/configfile_template.yaml"
+    config2file(config, template)
 
     # Running snakemake
     snakemake.snakemake(
