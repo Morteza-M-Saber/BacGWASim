@@ -2,7 +2,6 @@ name: BacGWASim
 channels:
   - defaults
   - anaconda
-  - etetoolkit
   - bioconda
   - conda-forge
 dependencies:
@@ -17,7 +16,7 @@ dependencies:
   - bcftools==1.10.2
   - plink==1.90b6.18
   - openjdk==8.0.152
-  - ete3==3.1.2
   - haploview==4.2
   - gcta==1.93.2beta
   - simbac==0.1a
+  - dendropy
