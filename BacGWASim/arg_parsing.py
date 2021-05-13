@@ -28,8 +28,9 @@ def parsing_config(config):
         raise ValueError("--number-var must be a non-null int, or -1")
 
     # case + control < num_species
-    if (config["case"] + config["control"] > config["num_species"]):
-        raise ValueError("--num-species must be bigger than the sum of --case and --control")
+    if config["phen_type"] == "cc":
+        if (config["case"] + config["control"] > config["num_species"]):
+           raise ValueError("--num-species must be bigger than the sum of --case and --control")
 
     # causal_maf_min must be smaller than causal_maf_max
     if config["causal_maf_min"] >= config["causal_maf_max"]:
