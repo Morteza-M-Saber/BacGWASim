@@ -113,8 +113,7 @@ control: 50                           # Use when phen_type='cc', case + control 
 
 # Linkage Disequilibrium plotting
 plot_ld: False   # Generate the LD plot
-snp_limit: 3000  # Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time and require increasing the java heap size
-heap_size: 1000  # Java heap_size for ld plot visualization (.mb)
+snp_limit: 3000  # Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time)
 ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this value, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)
 
 # Runtime parameters
@@ -128,21 +127,22 @@ BacGWASim produces the following outputs:
 
 ```
 genSim/
-  sims.vcf               #Multi-sample variant call file excluding rare alleles in vcf format (used for phenotype simulation)
-  sims.pickle            #Multi-sample variant call file excluding rare alleles in pandas pickle format (for machine learning analysis)
-  sims_no_selection.vcf  #Multi-sample variant call file including rare alleles
-  genSim.fasta           #Multiple-sequence alignment of simulated genomes in fasta format
-  phylogeny.nwk         #phylogenetic tree of the simulated population in newick format
+  sims.vcf               # Multi-sample variant call file excluding rare alleles in vcf format (used for phenotype simulation)
+  sims.pickle            # Multi-sample variant call file excluding rare alleles in pandas pickle format (for machine learning analysis)
+  sims_no_selection.vcf  # Multi-sample variant call file including rare alleles
+  genSim.fasta           # Multiple-sequence alignment of simulated genomes in fasta format
+  phylogeny.nwk          # phylogenetic tree of the simulated population in newick format
 
 phenSim/
-  phenSim.phen           #simulated phenotypes
-  phenSim.par            #ID, MAF and effect size of causal variants
-  phenSim.pickle         #simulated phenotpes in pandas pickle format
-  simVis.png             #Distribution of phenotypes and casual variants in the population
+  phenSim.phen           # Simulated phenotypes
+  phenSim.par            # ID, MAF and effect size of causal variants
+  phenSim.pickle         # Simulated phenotpes in pandas pickle format
+  simVis.png             # Distribution of phenotypes and casual variants in the population
 
 ld/
-  ldPlot.png             #Genome-wide linkage disequilibrium (LD) plot
-  ldPlot.LD              #Estimated pairwise r2 scores between sites used for plotting genome-wide LD plot
+  ld_plot.png            # Genome-wide linkage disequilibrium (LD) plot
+  ld_stackplot.png       # Plot illustrating the relationship between R2 and distance of SNPs
+  sims_subset.vcf        # Subset of the sims_no_selection.vcf file used for the plots
 
 ```
 

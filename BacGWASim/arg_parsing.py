@@ -28,8 +28,9 @@ def parsing_config(config):
         raise ValueError("--number-var must be a non-null int, or -1")
 
     # case + control < num_species
-    if (config["case"] + config["control"] > config["num_species"]):
-        raise ValueError("--num-species must be bigger than the sum of --case and --control")
+    if config["phen_type"] == "cc":
+        if (config["case"] + config["control"] > config["num_species"]):
+           raise ValueError("--num-species must be bigger than the sum of --case and --control")
 
     # causal_maf_min must be smaller than causal_maf_max
     if config["causal_maf_min"] >= config["causal_maf_max"]:
@@ -56,6 +57,7 @@ def config2file(config, template):
     for key, val in config.items():
         template_data = template_data.replace("$" + key.upper(), str(val))
 
+    os.makedirs(config["output_dir"], exist_ok=True)
     template_output = os.path.join(config["output_dir"], "configfile.yaml")
     with open(template_output, "w") as file:
         file.write(template_data)

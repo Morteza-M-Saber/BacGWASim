@@ -26,7 +26,6 @@ control: $CONTROL
 # Linkage Disequilibrium plotting
 plot_ld: $PLOT_LD
 snp_limit: $SNP_LIMIT
-heap_size: $HEAP_SIZE
 ld_maf: $LD_MAF
 
 # Runtime parameters
