@@ -57,6 +57,7 @@ def config2file(config, template):
     for key, val in config.items():
         template_data = template_data.replace("$" + key.upper(), str(val))
 
+    os.makedirs(config["output_dir"], exist_ok=True)
     template_output = os.path.join(config["output_dir"], "configfile.yaml")
     with open(template_output, "w") as file:
         file.write(template_data)
