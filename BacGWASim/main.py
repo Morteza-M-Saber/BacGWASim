@@ -162,12 +162,7 @@ def main(sysargs=sys.argv[1:]):
     plot_group.add_argument(
         "--snp-limit",
         default=None, metavar="INT", type=int,
-        help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significantly increase computation time and require increasing the java heap size)"
-    )
-    plot_group.add_argument(
-        "--heap-size",
-        default=None, metavar="INT", type=int,
-        help="Java heap_size for ld plot visualization (.mb)"
+        help="Number of SNPs randomly selected for plotting linkage map (Increasing this number will significantly increase computation time)"
     )
     plot_group.add_argument(
         "--ld-maf",
