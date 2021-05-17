@@ -24,7 +24,7 @@ case: 50                              # Use when phen_type='cc', case + control 
 control: 50                           # Use when phen_type='cc', case + control must not be bigger than num_species
 
 # Linkage Disequilibrium plotting
-plot_ld: False   # Generate the LD plot
+plot_ld: True    # Generate the LD plot
 snp_limit: 1000  # Number of SNPs randomly selected for plotting linkage map (Increasing this number will significatnly increase computation time)
 ld_maf: 0.1      # Minimum MinorAlleleFrequency of markers for LD plotting (Lower this value, it is more difficult to estimate accurate r2 values between pairs of markers leading to more noisy plot)
 

@@ -35,7 +35,8 @@ rule ld_plink_r2:
     input:
         vcf_subset = rules.ld_plotter_helper1.output.subset,
     output:
-        ld = "{output_dir}/simulations/ld/sims.ld",
+        ld = temp("{output_dir}/simulations/ld/sims.ld"),
+        log = temp("{output_dir}/simulations/ld/sims.log"),
         nosex = temp("{output_dir}/simulations/ld/sims.nosex")
     params:
         output = "{output_dir}/simulations/ld/sims",
