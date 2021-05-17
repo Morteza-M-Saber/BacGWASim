@@ -3,7 +3,7 @@
 
 # BacGWASim
 
-A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.0.0)
+A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.1.0)
 
 ---
 
@@ -25,15 +25,13 @@ Between parenthesis the versions the script was tested against:
 - `numpy` (1.15.2)
 - `scipy` (1.1.0)
 - `pandas` (1.1.5)
-- `ete3` (3.1.2)
+- `DendroPy` (4.5.2)
 - `pyvcf` (0.6.8)
 - `snakemake`(5.31.1)
 - `bcftools` (1.10.2)
 - `plink` (1.9)
 - `GCTA` (1.93.2beta)
 - `snp-sites` (2.5.1)
-- `openjdk` (8.0.152)
-- `Haploview` (4.2)
 - `simbac` (commit `5015897`)
 
 ## Installation - Using conda
