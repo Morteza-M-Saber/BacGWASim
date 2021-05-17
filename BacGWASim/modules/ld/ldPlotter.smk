@@ -8,7 +8,7 @@ Construct LD plot for the result of each simulation
 """
 
 
-rule LDPlotter_bcf:
+rule ld_plotter_bcf:
     """ Filter based on MAF to remove noise. """
     input:
         vcf = rules.vcfRefiner_markers.output.vcf,
@@ -20,77 +20,53 @@ rule LDPlotter_bcf:
         "-Ov -o {output.vcfmaf}"
 
 
-rule LDPlotter_helper1:
+rule ld_plotter_helper1:
     """ Subsetting SNPs to < 3000 and converting chromosome to X. """
     input:
-        vcfmaf = rules.LDPlotter_bcf.output.vcfmaf,
+        vcfmaf = rules.ld_plotter_bcf.output.vcfmaf,
     output:
-        subset = temp("{output_dir}/simulations/ld/sims_subset_x.vcf"),
+        subset = "{output_dir}/simulations/ld/sims_subset.vcf",
     script:
-        "ldplotter1.py"
+        "ld_plotter1.py"
 
 
-rule LDPlotter_plink:
-    """ Converting vcf to plink ped/map file. """
+rule ld_plink_r2:
+    """ Get linkage disequilibrium r2 from plink """
     input:
-        subset = rules.LDPlotter_helper1.output.subset,
+        vcf_subset = rules.ld_plotter_helper1.output.subset,
     output:
-        vcfmap = temp("{output_dir}/simulations/ld/sims.map"),
-        vcfped = temp("{output_dir}/simulations/ld/sims.ped"),
+        ld = "{output_dir}/simulations/ld/sims.ld",
+        nosex = temp("{output_dir}/simulations/ld/sims.nosex")
     params:
-        output = "{output_dir}/simulations/ld/sims"
+        output = "{output_dir}/simulations/ld/sims",
+    threads: 8
     log:
-        "{output_dir}/logs/LDPlotter_plink.log"
+        "{output_dir}/logs/ld_plink_r2.log"
     shell:
         "plink "
-        "--vcf {input.subset} "
-        "--recode "
+        "--vcf {input.vcf_subset} "
+        "--r2 square0 "
         "--out {params.output} "
+        "--threads {threads} "
         "&> {log}"
 
 
-rule LDPlotter_helper2:
-    """ Changing gender to male and creating info file out of plink ped file. """
+rule ld_plot:
+    """ Plotting the LD from the vcf subset. """
     input:
-        vcfmap = rules.LDPlotter_plink.output.vcfmap,
-        vcfped = rules.LDPlotter_plink.output.vcfped,
+        ld = rules.ld_plink_r2.output.ld,
+        vcf_subset = rules.ld_plotter_helper1.output.subset,
     output:
-        haploview_inmap = temp("{output_dir}/simulations/ld/haploview_in.map"),
-        haploview_inped = temp("{output_dir}/simulations/ld/haploview_in.ped"),
+        plot = "{output_dir}/simulations/ld/ld_plot.png"
     script:
-        "ldplotter2.py"
-
-
-rule LDPlotter:
-    """ Generating LD profile using Haploview. """
-    input:
-        haploview_inmap = rules.LDPlotter_helper2.output.haploview_inmap,
-        haploview_inped = rules.LDPlotter_helper2.output.haploview_inped,
-    output:
-        haploview = "{output_dir}/simulations/ld/ldPlot.LD.PNG",
-        haploview_ld = "{output_dir}/simulations/ld/ldPlot.LD",
-    params:
-        output = "{output_dir}/simulations/ld/ldPlot"
-    log:
-        "{output_dir}/logs/LDPlotter.log"
-    shell:
-        "haploview "
-        "-nogui "
-        "-pedfile {input.haploview_inped} "
-        "-info {input.haploview_inmap} "
-        "-dprime "
-        "-compressedpng "
-        "-chromosome X "
-        "-maxDistance 10000 "
-        "-memory {config[heap_size]} "
-        "-out {params.output} "
-        "&> {log}"            
+        "ld_plot.py"
 
 
 rule ld_stackplot:
     """ Generating LD stacked plot. """
     input:
-        haploview_ld = "{output_dir}/simulations/ld/ldPlot.LD",
+        ld = rules.ld_plink_r2.output.ld,
+        vcf_subset = rules.ld_plotter_helper1.output.subset,
     output:
         ld_stackplot = "{output_dir}/simulations/ld/ld_stackplot.png",
     script:
