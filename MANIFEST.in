@@ -1,6 +1,6 @@
 include BacGWASim/Snakefile
 include BacGWASim/configfile.yaml
-inlcude BacGWASIM/configfile_template.yaml
+inlcude BacGWASim/configfile_template.yaml
 include BacGWASim/modules/genSim/genSim.smk
 include BacGWASim/modules/ld/ldPlotter.smk
 include BacGWASim/modules/ld/ld_plotter1.py
