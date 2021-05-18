@@ -5,18 +5,16 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - python==3.6.12
+  - python>=3.7
   - pandas==1.1.5
   - pyvcf==0.6.8
   - scipy==1.5.2
   - numpy==1.19.2
-  - matplotlib
+  - matplotlib>=3.4
   - snakemake==5.31.1
   - snp-sites==2.5.1
   - bcftools==1.10.2
   - plink==1.90b6.18
-  - openjdk==8.0.152
-  - haploview==4.2
   - gcta==1.93.2beta
   - simbac==0.1a
   - dendropy

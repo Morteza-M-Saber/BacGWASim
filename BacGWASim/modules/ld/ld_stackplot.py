@@ -23,48 +23,45 @@ def in_between(a, b, c):
     return a < b and b <= c
 
 
-def LDstackplot(LD, out, figsize):
+def LDstackplot(dist, r2, out, figsize, colors):
     boundaries = [0.2, 0.4, 0.6, 0.8, 1]
 
     # changing matplotlib the default style
     matplotlib.style.use("ggplot")
-    # Getting the table of distances and r2 squares
-    LDTable = pd.read_csv(LD, sep="\t")
-
-    # getting the column of distance and r2 and converting them to series
-    Dist = LDTable[["Dist"]].values.tolist()
-    r2 = LDTable[["r^2"]].values.tolist()
 
     # averaging all the r2 square for a specific distance and make a dictionary out of of it
-    DistDict = {}
-    for item in zip(Dist, r2):
-        if item[0][0] not in DistDict:
-            DistDict[item[0][0]] = [item[1]]
+    dist_dict = {}
+    for _dist, _r2 in zip(dist, r2):
+        if _dist not in dist_dict:
+            dist_dict[_dist] = [_r2]
         else:
-            DistDict[item[0][0]].append(item[1])
-    for item in DistDict:
-        DistDict[item] = np.mean(DistDict[item])
+            dist_dict[_dist].append(_r2)
+    for item in dist_dict:
+        dist_dict[item] = np.mean(dist_dict[item])
 
     # summarizing the r2 linkage score for 1000bp window across the 500kb
-    keylist = sorted(DistDict.keys())
+    keylist = sorted(dist_dict.keys())
 
     bins = [50, 200, 500, 1000, 2000, 5000, 10000,
             20000, 50000, 100000, 200000, 500000, 1000000]
     inds = np.digitize(keylist, bins)
     max_bin = np.max(inds)
 
-    DistDictSum = {}
+    dist_dict_sum = {}
     for Range in inds:
-        DistDictSum[Range] = []
+        dist_dict_sum[Range] = []
     for Value in zip(keylist, inds):
         # value[1] is equal to range value, here we accumulated all the r2 values relating to a bin
-        DistDictSum[Value[1]].append(DistDict[Value[0]])
+        dist_dict_sum[Value[1]].append(dist_dict[Value[0]])
 
     data = [list() for n in range(len(boundaries) - 1)]
-    for item in DistDictSum:
-        size_bin = len(DistDictSum[item])
+    for item in dist_dict_sum:
+        size_bin = len(dist_dict_sum[item])
         for i in range(len(boundaries) - 1):
-            filt = filter(lambda x: in_between(boundaries[i], x, boundaries[i+1]), DistDictSum[item])
+            filt = filter(
+                lambda x: in_between(boundaries[i], x, boundaries[i+1]), 
+                dist_dict_sum[item]
+            )
             data[i].append(len(list(filt)) / size_bin)
             
     # Data
@@ -72,9 +69,7 @@ def LDstackplot(LD, out, figsize):
 
     # plot
     plt.figure(figsize=(float(figsize.split(",")[0])/2.54, float(figsize.split(",")[1])/2.54))
-    barWidth = 1
 
-    colors = ["#b5ffb9", "#f9bc86", "#a3acff", "#FF0000"]
     # Flipping some data to reorder the bars
     data = data[::-1]
     boundaries = boundaries[::-1]
@@ -106,6 +101,29 @@ def LDstackplot(LD, out, figsize):
 
 
 # Running LDstackplot
-ld = snakemake.input.haploview_ld
+ld = snakemake.input.ld
+vcf = snakemake.input.vcf_subset
 out = snakemake.output.ld_stackplot
-LDstackplot(ld, out, "16,16")
+colors = ["#b5ffb9", "#f9bc86", "#a3acff", "#FF0000"]
+
+# Loading data
+data = np.genfromtxt(ld)
+N = data.shape[0]
+
+# Loading VCF data
+vcf = pd.read_csv(vcf, sep="\t", skiprows=13, usecols=["POS"]).to_dict()["POS"]
+
+# Parsing data to get [(DIST, R2), ...]
+dist = [
+    np.abs(vcf[li] - vcf[col])
+    for line in range(N) 
+    for li, col in zip(range(line, N), range(0, N-line))
+]
+
+r2 = [
+    data[li, col]
+    for line in range(N) 
+    for li, col in zip(range(line, N), range(0, N-line))
+]
+
+LDstackplot(dist, r2, out, "16,16", colors)
