@@ -50,8 +50,9 @@ def is_percentage_inclusive(param, val):
         raise ValueError(param + " value must be between 0 and 1 (inclusive, [0-1])")
 
 
-def config2file(config, template):
-    with open(template, "r") as file:
+def config2file(config, template="configfile_template.yaml"):
+    template_file = os.path.join(os.path.dirname(__file__), template)
+    with open(template_file, "r") as file:
         template_data = file.read()
 
     for key, val in config.items():
