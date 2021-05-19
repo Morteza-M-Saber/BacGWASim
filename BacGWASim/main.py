@@ -198,16 +198,15 @@ def main(sysargs=sys.argv[1:]):
 
     # Using cli args (priority)
     args = vars(args)
-    for arg in [arg for arg in args if arg is not "config"]:
-        if args[arg] is not None:
+    for arg in [arg for arg in args if arg != "config"]:
+        if args[arg] != None:
             config[arg] = args[arg]
 
     # Parsing the configuration
     parsing_config(config)
 
     # Saving the modified config file in the results
-    template = "BacGWASim/configfile_template.yaml"
-    config2file(config, template)
+    config2file(config)
 
     # Running snakemake
     snakemake.snakemake(
