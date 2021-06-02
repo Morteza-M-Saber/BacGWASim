@@ -150,7 +150,11 @@ def main(sysargs=sys.argv[1:]):
         default=None, type=float,
         help="In case of case-control binary phenotype simulation, number of case and control samples must be defined by 'case' and 'control' parameters"
     )
-
+    phen_group.add_argument(
+        "--simvis-dpi",
+        default=None, type=int,
+        help="Set the DPI for the simVis plot"
+    )
 
     # Arg group - Linkage disequilibrium plotting
     plot_group = parser.add_argument_group("Linkage Disequilibrium plotting")

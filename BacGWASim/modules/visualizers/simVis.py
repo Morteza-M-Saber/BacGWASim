@@ -1,3 +1,4 @@
+from numpy.lib.function_base import select
 import dendropy
 import matplotlib as mpl
 import matplotlib.patches as patches
@@ -15,8 +16,16 @@ input_vcf = snakemake.input.vcf
 input_par = snakemake.input.par
 input_phen = snakemake.input.phen
 input_phylo = snakemake.input.phylo
-phen_type = snakemake.config["phen_type"]
 output_simVis = snakemake.output.simVis
+phen_type = snakemake.config["phen_type"]
+dpi = snakemake.config["simvis_dpi"]
+max_genomes = 500
+
+# Visual parameters
+if max_genomes <= 200:
+    linewidth = 2
+else:
+    linewidth = 1
 
 """ 
     Functions fix_verts, smoothsegment and part of the polar dendrogram plotting 
@@ -32,8 +41,10 @@ def font_size(num):
         return 12
     elif num < 150:
         return 10
-    else:
+    elif num < 350:
         return 8
+    else:
+        return 5
 
 def fix_verts(ax, orient=1):
     for coll in ax.collections:
@@ -125,7 +136,7 @@ def plot_dendrogram(icoord, dcoord, labels, ax):
         rect = patches.Rectangle(
             (x_rect, y_rect), width=width, height=height, angle=angle,
             edgecolor='k', facecolor=cmap(norm(float(PhenoDict[label]))),
-            transform=ax.transData._b, linewidth=2,
+            transform=ax.transData._b, linewidth=linewidth,
         )
         ax.add_patch(rect)
 
@@ -216,8 +227,16 @@ for records in vcf_reader:
 tree = dendropy.Tree.get(path=input_phylo, schema='newick')
 pdm = tree.phylogenetic_distance_matrix()
 
+# Selecting genomes (limit of max_genomes is plotted)
+taxons = list(tree.taxon_namespace)
+if len(taxons) > max_genomes:
+    selected_taxons = np.random.choice(taxons, max_genomes, replace=False)
+else:
+    selected_taxons = taxons
+
+
 # Labels
-labels = [taxon.label for taxon in tree.taxon_namespace]
+labels = [taxon.label for taxon in selected_taxons]
 
 # Creating color map
 norm = mpl.colors.Normalize(vmin=color_min,vmax=color_max)
@@ -230,8 +249,8 @@ if phen_type == "cc":
 # Distance matrix
 dist = np.zeros(shape=(len(labels)**2 - len(labels))//2)
 indx = 0
-for i, t1 in enumerate(tree.taxon_namespace):
-    for t2 in tree.taxon_namespace[i+1:]:
+for i, t1 in enumerate(selected_taxons):
+    for t2 in selected_taxons[i+1:]:
         dist[indx] = pdm(t1, t2)
         indx += 1
 
@@ -244,7 +263,7 @@ icoord = np.array(Z2['icoord'])
 dcoord = np.array(Z2['dcoord'])
 
 # Creating figure handle
-fig = plt.figure(figsize=(16,16))
+fig = plt.figure(figsize=(16,16), dpi=int(dpi))
 ax = fig.add_subplot(111, polar=True)
 
 # Plotting main dendrogram

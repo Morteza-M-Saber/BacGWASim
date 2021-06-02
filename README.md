@@ -108,6 +108,7 @@ heritability: 1                       # Heritability of phenotype
 disease_prevalence: 0.5               # Prevalence of phenotype
 case: 50                              # Use when phen_type='cc', case + control must not be bigger than num_species
 control: 50                           # Use when phen_type='cc', case + control must not be bigger than num_species
+simvis_dpi: 100                       # Set the DPI for the simVis plot
 
 # Linkage Disequilibrium plotting
 plot_ld: False   # Generate the LD plot
