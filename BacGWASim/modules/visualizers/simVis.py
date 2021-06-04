@@ -176,51 +176,36 @@ if phen_type == 'cc':
     
 elif phen_type == 'quant':
     data = pd.read_csv(input_phen, sep=' ', header=None, index_col=0)
-    # removing samples with unknwon phenotype
-    for sample_phen in zip(data[1], data[2]):
-        if float(sample_phen[1]) == -9.0:
-            PhenoDict[sample_phen[0]] = 'ukwn'
-            data.drop(labels=sample_phen[0], axis=0, inplace=True)
+    # Removing samples with unknown phenotype
+    data = data[data[2] != -9.0]
     # Normalize the data
     data[2]=(data[2]-data[2].mean())/data[2].std()
     color_max = data[2].max()
     color_min = data[2].min()
+    # Data to dict
+    PhenoDict = data[2].to_dict()
 
-    for sample_phen in zip(data[1], data[2]):
-        PhenoDict[sample_phen[0]] = str(sample_phen[1])
-
-# 2) Input the causal variant list and generate  an array out of it
-# Getting the list of all samples
-vcf_reader = vcf.Reader(open(input_vcf, 'r'))
-record = next(vcf_reader)
-Samples = vcf_reader.samples
+# 2) Getting the list of all samples
+samples = list(PhenoDict.keys())
+if len(samples) > max_genomes:
+    samples = np.random.choice(samples, max_genomes, replace=False)
 
 # 3) Getting the list of causal variants
-MyCausalList = pd.read_table(input_par)
-MyCausalList.set_index('QTL', inplace=True)
-CausalList = MyCausalList.index.tolist()
+CausalList = pd.read_csv(input_par, sep="\t")["QTL"].to_list()
 
 # 4) Iterate over samples present in the phylogenetic tree
-pheno_dict = {}
-for samp in Samples:
-    # Modify this with acual results
-    pheno_dict[samp] = ['Null']*len(CausalList)
+pheno_dict = {sample: ["Null"]*len(CausalList) for sample in samples}
 vcf_reader = vcf.Reader(open(input_vcf, 'r'))
-FoundHit = 0
 for records in vcf_reader:
-    if records.ID in CausalList:
-        FoundHit += 1
-        for SamplesNow in Samples:
-            GT = records.genotype(SamplesNow)['GT']
-            if GT == '0':
-                GTUpdate = -1
-            elif GT == '1':
-                GTUpdate = 1
-            else:
-                raise Exception('The identified status of the marker %s is not appropriate for bacterial polymorphism' % GT)
-            pheno_dict[SamplesNow][CausalList.index(records.ID)] = GTUpdate
-    if FoundHit == len(CausalList):
-        break
+    for SamplesNow in samples:
+        GT = records.genotype(SamplesNow)['GT']
+        if GT == '0':
+            GTUpdate = -1
+        elif GT == '1':
+            GTUpdate = 1
+        else:
+            raise Exception('The identified status of the marker %s is not appropriate for bacterial polymorphism' % GT)
+        pheno_dict[SamplesNow][CausalList.index(records.ID)] = GTUpdate
 
 
 # Creating tree and pdm
@@ -230,13 +215,10 @@ pdm = tree.phylogenetic_distance_matrix()
 # Selecting genomes (limit of max_genomes is plotted)
 taxons = list(tree.taxon_namespace)
 if len(taxons) > max_genomes:
-    selected_taxons = np.random.choice(taxons, max_genomes, replace=False)
-else:
-    selected_taxons = taxons
-
+    taxons = [taxon for taxon in taxons if taxon._label in samples]
 
 # Labels
-labels = [taxon.label for taxon in selected_taxons]
+labels = [taxon.label for taxon in taxons]
 
 # Creating color map
 norm = mpl.colors.Normalize(vmin=color_min,vmax=color_max)
@@ -249,8 +231,8 @@ if phen_type == "cc":
 # Distance matrix
 dist = np.zeros(shape=(len(labels)**2 - len(labels))//2)
 indx = 0
-for i, t1 in enumerate(selected_taxons):
-    for t2 in selected_taxons[i+1:]:
+for i, t1 in enumerate(taxons):
+    for t2 in taxons[i+1:]:
         dist[indx] = pdm(t1, t2)
         indx += 1
 
