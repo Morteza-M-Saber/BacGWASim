@@ -1,3 +1,4 @@
+from numpy.lib.function_base import select
 import dendropy
 import matplotlib as mpl
 import matplotlib.patches as patches
@@ -15,8 +16,16 @@ input_vcf = snakemake.input.vcf
 input_par = snakemake.input.par
 input_phen = snakemake.input.phen
 input_phylo = snakemake.input.phylo
-phen_type = snakemake.config["phen_type"]
 output_simVis = snakemake.output.simVis
+phen_type = snakemake.config["phen_type"]
+dpi = snakemake.config["simvis_dpi"]
+max_genomes = 500
+
+# Visual parameters
+if max_genomes <= 200:
+    linewidth = 2
+else:
+    linewidth = 1
 
 """ 
     Functions fix_verts, smoothsegment and part of the polar dendrogram plotting 
@@ -32,8 +41,10 @@ def font_size(num):
         return 12
     elif num < 150:
         return 10
-    else:
+    elif num < 350:
         return 8
+    else:
+        return 5
 
 def fix_verts(ax, orient=1):
     for coll in ax.collections:
@@ -125,7 +136,7 @@ def plot_dendrogram(icoord, dcoord, labels, ax):
         rect = patches.Rectangle(
             (x_rect, y_rect), width=width, height=height, angle=angle,
             edgecolor='k', facecolor=cmap(norm(float(PhenoDict[label]))),
-            transform=ax.transData._b, linewidth=2,
+            transform=ax.transData._b, linewidth=linewidth,
         )
         ax.add_patch(rect)
 
@@ -165,59 +176,49 @@ if phen_type == 'cc':
     
 elif phen_type == 'quant':
     data = pd.read_csv(input_phen, sep=' ', header=None, index_col=0)
-    # removing samples with unknwon phenotype
-    for sample_phen in zip(data[1], data[2]):
-        if float(sample_phen[1]) == -9.0:
-            PhenoDict[sample_phen[0]] = 'ukwn'
-            data.drop(labels=sample_phen[0], axis=0, inplace=True)
+    # Removing samples with unknown phenotype
+    data = data[data[2] != -9.0]
     # Normalize the data
     data[2]=(data[2]-data[2].mean())/data[2].std()
     color_max = data[2].max()
     color_min = data[2].min()
+    # Data to dict
+    PhenoDict = data[2].to_dict()
 
-    for sample_phen in zip(data[1], data[2]):
-        PhenoDict[sample_phen[0]] = str(sample_phen[1])
-
-# 2) Input the causal variant list and generate  an array out of it
-# Getting the list of all samples
-vcf_reader = vcf.Reader(open(input_vcf, 'r'))
-record = next(vcf_reader)
-Samples = vcf_reader.samples
+# 2) Getting the list of all samples
+samples = list(PhenoDict.keys())
+if len(samples) > max_genomes:
+    samples = np.random.choice(samples, max_genomes, replace=False)
 
 # 3) Getting the list of causal variants
-MyCausalList = pd.read_table(input_par)
-MyCausalList.set_index('QTL', inplace=True)
-CausalList = MyCausalList.index.tolist()
+CausalList = pd.read_csv(input_par, sep="\t")["QTL"].to_list()
 
 # 4) Iterate over samples present in the phylogenetic tree
-pheno_dict = {}
-for samp in Samples:
-    # Modify this with acual results
-    pheno_dict[samp] = ['Null']*len(CausalList)
+pheno_dict = {sample: ["Null"]*len(CausalList) for sample in samples}
 vcf_reader = vcf.Reader(open(input_vcf, 'r'))
-FoundHit = 0
 for records in vcf_reader:
-    if records.ID in CausalList:
-        FoundHit += 1
-        for SamplesNow in Samples:
-            GT = records.genotype(SamplesNow)['GT']
-            if GT == '0':
-                GTUpdate = -1
-            elif GT == '1':
-                GTUpdate = 1
-            else:
-                raise Exception('The identified status of the marker %s is not appropriate for bacterial polymorphism' % GT)
-            pheno_dict[SamplesNow][CausalList.index(records.ID)] = GTUpdate
-    if FoundHit == len(CausalList):
-        break
+    for SamplesNow in samples:
+        GT = records.genotype(SamplesNow)['GT']
+        if GT == '0':
+            GTUpdate = -1
+        elif GT == '1':
+            GTUpdate = 1
+        else:
+            raise Exception('The identified status of the marker %s is not appropriate for bacterial polymorphism' % GT)
+        pheno_dict[SamplesNow][CausalList.index(records.ID)] = GTUpdate
 
 
 # Creating tree and pdm
 tree = dendropy.Tree.get(path=input_phylo, schema='newick')
 pdm = tree.phylogenetic_distance_matrix()
 
+# Selecting genomes (limit of max_genomes is plotted)
+taxons = list(tree.taxon_namespace)
+if len(taxons) > max_genomes:
+    taxons = [taxon for taxon in taxons if taxon._label in samples]
+
 # Labels
-labels = [taxon.label for taxon in tree.taxon_namespace]
+labels = [taxon.label for taxon in taxons]
 
 # Creating color map
 norm = mpl.colors.Normalize(vmin=color_min,vmax=color_max)
@@ -230,8 +231,8 @@ if phen_type == "cc":
 # Distance matrix
 dist = np.zeros(shape=(len(labels)**2 - len(labels))//2)
 indx = 0
-for i, t1 in enumerate(tree.taxon_namespace):
-    for t2 in tree.taxon_namespace[i+1:]:
+for i, t1 in enumerate(taxons):
+    for t2 in taxons[i+1:]:
         dist[indx] = pdm(t1, t2)
         indx += 1
 
@@ -244,7 +245,7 @@ icoord = np.array(Z2['icoord'])
 dcoord = np.array(Z2['dcoord'])
 
 # Creating figure handle
-fig = plt.figure(figsize=(16,16))
+fig = plt.figure(figsize=(16,16), dpi=int(dpi))
 ax = fig.add_subplot(111, polar=True)
 
 # Plotting main dendrogram
