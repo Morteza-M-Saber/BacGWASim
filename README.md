@@ -3,7 +3,7 @@
 
 # BacGWASim
 
-A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.1.0)
+A simulator for Bacterial Machine learning and Genome-wide Association studies (BacGWASim v2.1.1)
 
 ---
 
