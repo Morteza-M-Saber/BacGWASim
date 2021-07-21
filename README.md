@@ -133,10 +133,12 @@ genSim/
   phylogeny.nwk          # phylogenetic tree of the simulated population in newick format
 
 phenSim/
-  phenSim.phen           # Simulated phenotypes
+  phenSim.log            # GCTA log file
   phenSim.par            # ID, MAF and effect size of causal variants
+  phenSim.phen           # Simulated phenotypes
   phenSim.pickle         # Simulated phenotpes in pandas pickle format
   simVis.png             # Distribution of phenotypes and casual variants in the population
+  sims.vcf               # Causal variants inclusion across samples
 
 ld/
   ld_plot.png            # Genome-wide linkage disequilibrium (LD) plot

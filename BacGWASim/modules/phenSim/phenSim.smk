@@ -42,8 +42,8 @@ rule phenSim:
 rule phenSim_pickle:
     """ Convert phenotypes to matrix. """
     input:
-        gtca_phen = rules.phenSim.output.gcta_phen,
+        phen = rules.phenSim.output.gcta_phen,
     output:
-        pickle="{output_dir}/simulations/phenSim/{replication_index}/phenSim.pickle",
+        pickle = "{output_dir}/simulations/phenSim/{replication_index}/phenSim.pickle",
     script:
         "phenSim_pickle.py"

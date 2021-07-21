@@ -10,6 +10,7 @@ include BacGWASim/modules/phenSim/phenPermutor.py
 include BacGWASim/modules/phenSim/phenPermutor.smk
 include BacGWASim/modules/phenSim/phenSim.py
 include BacGWASim/modules/phenSim/phenSim.smk
+include BacGWASim/modules/phenSim/phenSim_pickle.py
 include BacGWASim/modules/varCall/snpSites.smk
 include BacGWASim/modules/varCall/vcfRefiner_helper1.py
 include BacGWASim/modules/varCall/vcfRefiner_helper2.py
